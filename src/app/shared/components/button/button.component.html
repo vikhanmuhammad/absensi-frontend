@@ -1,0 +1,9 @@
+<button
+  class="btn"
+  [class.btn-primary]="variant === 'primary'"
+  [class.btn-outline]="variant === 'outline'"
+  [type]="type"
+  [disabled]="disabled"
+>
+  <ng-content></ng-content>
+</button>
