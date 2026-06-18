@@ -6,15 +6,16 @@ dl {
   margin: 0;
   display: grid;
   grid-template-columns: 160px 1fr;
-  gap: 10px 12px;
-  font-size: 14px;
+  gap: 12px 14px;
+  font-size: 15px;
 }
 
 dt {
   color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 dd {
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
 }/*# sourceMappingURL=project-detail.component.css.map */

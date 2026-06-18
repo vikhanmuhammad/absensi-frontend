@@ -9,51 +9,89 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  font-family: var(--font-family);
-  background: var(--color-bg);
+  font-family: var(--font-body);
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+  position: relative;
+  overflow: hidden;
+  /* Subtle decorative circles */
+}
+.login-wrap::before, .login-wrap::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+  background: #fff;
+}
+.login-wrap::before {
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  right: -80px;
+}
+.login-wrap::after {
+  width: 300px;
+  height: 300px;
+  bottom: -60px;
+  left: -40px;
 }
 
 .login-card {
   width: 100%;
-  max-width: 380px;
+  max-width: 420px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 32px 28px;
-  box-shadow: 0 4px 16px rgba(30, 41, 59, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  box-shadow: var(--shadow-lg), 0 0 60px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 1;
+  animation: fadeSlideIn 0.4s ease-out;
 }
 
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .login-logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  background: var(--color-primary);
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--color-primary), #818cf8);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 22px;
-  margin: 0 auto 16px;
+  font-weight: 800;
+  font-size: 24px;
+  font-family: var(--font-heading);
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
 }
 
 .login-title {
   text-align: center;
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  margin: 0 0 6px;
   color: var(--color-text);
 }
 
 .login-subtitle {
   text-align: center;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--color-text-muted);
-  margin: 0 0 24px;
+  margin: 0 0 28px;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 label {
@@ -66,33 +104,43 @@ label {
 
 input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid var(--color-border);
+  padding: 13px 14px;
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius);
-  font-size: 15px;
+  font-size: 16px;
   font-family: inherit;
-  background: #fff;
+  background: var(--color-bg);
   color: var(--color-text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 input:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
+  outline: none;
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+input::-moz-placeholder {
+  color: #94a3b8;
+}
+input::placeholder {
+  color: #94a3b8;
 }
 
 .field-error {
   margin: 6px 0 0;
   font-size: 13px;
   color: var(--color-danger);
+  font-weight: 500;
 }
 
 .login-error {
   margin: 0 0 16px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border-radius: var(--radius);
   background: var(--color-danger-bg);
   color: var(--color-danger);
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 4px solid var(--color-danger);
 }
 
 .login-options {
@@ -100,22 +148,27 @@ input:focus {
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 .login-options a {
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 600;
+  transition: color 0.15s;
+}
+.login-options a:hover {
+  color: var(--color-primary-dark);
 }
 
 .checkbox-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   color: var(--color-text-muted);
 }
 .checkbox-row input {
   width: auto;
+  accent-color: var(--color-primary);
 }
 .checkbox-row label {
   margin: 0;
@@ -126,10 +179,13 @@ input:focus {
   text-align: center;
   font-size: 13px;
   color: var(--color-text-muted);
-  margin: 18px 0 0;
+  margin: 20px 0 0;
 }
 .login-help a {
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
+}
+.login-help a:hover {
+  color: var(--color-primary-dark);
 }/*# sourceMappingURL=login.component.css.map */

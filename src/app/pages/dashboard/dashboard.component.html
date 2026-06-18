@@ -9,22 +9,27 @@
 @if (summary(); as s) {
   <div class="grid-kpi">
     <app-card>
+      <div class="kpi-icon kpi-icon-primary"><app-icon name="users" [size]="22"></app-icon></div>
       <div class="kpi-value">{{ s.totalKaryawanAktif }}</div>
       <div class="kpi-label">Total Karyawan Aktif</div>
     </app-card>
     <app-card>
+      <div class="kpi-icon kpi-icon-success"><app-icon name="check-circle" [size]="22"></app-icon></div>
       <div class="kpi-value kpi-success">{{ s.hadirHariIni }}</div>
       <div class="kpi-label">Hadir Hari Ini</div>
     </app-card>
     <app-card>
+      <div class="kpi-icon kpi-icon-warning"><app-icon name="clock" [size]="22"></app-icon></div>
       <div class="kpi-value kpi-warning">{{ s.terlambatHariIni }}</div>
       <div class="kpi-label">Terlambat</div>
     </app-card>
     <app-card>
+      <div class="kpi-icon kpi-icon-danger"><app-icon name="user-circle" [size]="22"></app-icon></div>
       <div class="kpi-value kpi-danger">{{ s.alfaHariIni }}</div>
       <div class="kpi-label">Alfa (Tidak Hadir)</div>
     </app-card>
     <app-card>
+      <div class="kpi-icon kpi-icon-info"><app-icon name="file-check" [size]="22"></app-icon></div>
       <div class="kpi-value kpi-info">{{ s.cutiAktif }}</div>
       <div class="kpi-label">Sedang Cuti / Izin</div>
     </app-card>

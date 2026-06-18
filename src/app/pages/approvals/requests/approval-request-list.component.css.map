@@ -1,1 +1,1 @@
-{"version":3,"sources":["approval-request-list.component.scss","approval-request-list.component.css"],"names":[],"mappings":"AAAA;EACE,cAAA;ACCF;;ADEA;EACE,gBAAA;ACCF","file":"approval-request-list.component.css"}
+{"version":3,"sources":["approval-request-list.component.scss","approval-request-list.component.css"],"names":[],"mappings":"AAAA;EACE,cAAA;ACCF;;ADEA;EACE,gBAAA;EACA,0CAAA;EACA,kBAAA;ACCF","file":"approval-request-list.component.css"}

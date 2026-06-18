@@ -5,6 +5,7 @@ import { Subscription, interval } from 'rxjs';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { BadgeComponent, BadgeVariant } from '../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { AttendanceService } from '../../../core/services/attendance.service';
 import { Attendance, LokasiKerja, StatusKehadiran } from '../../../core/models/entities';
 import { extractErrorMessage } from '../../../core/models/api-envelope';
@@ -26,7 +27,7 @@ const STATUS_VARIANT: Record<StatusKehadiran, BadgeVariant> = {
 @Component({
   selector: 'app-attendance-clock',
   standalone: true,
-  imports: [DatePipe, ReactiveFormsModule, CardComponent, BadgeComponent, ButtonComponent],
+  imports: [DatePipe, ReactiveFormsModule, CardComponent, BadgeComponent, ButtonComponent, IconComponent],
   templateUrl: './clock.component.html',
   styleUrl: './clock.component.scss',
 })

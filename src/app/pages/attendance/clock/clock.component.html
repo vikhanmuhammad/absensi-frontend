@@ -1,6 +1,9 @@
 <app-card class="clock-card">
   <div class="clock-date">{{ now() | date: 'EEEE, d MMMM y' }}</div>
-  <div class="clock-time">{{ now() | date: 'HH:mm:ss' }}</div>
+  <div class="clock-time-display">
+    <app-icon name="clock" [size]="32"></app-icon>
+    <span class="clock-time">{{ now() | date: 'HH:mm:ss' }}</span>
+  </div>
 
   @if (loading()) {
     <p class="muted">Memuat status absensi...</p>

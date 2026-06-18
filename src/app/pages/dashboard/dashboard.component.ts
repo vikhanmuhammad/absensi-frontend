@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { BadgeComponent } from '../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 import { ReportService } from '../../core/services/report.service';
 import { LeaveRequestService } from '../../core/services/leave-request.service';
 import { AttendanceService } from '../../core/services/attendance.service';
@@ -17,7 +18,7 @@ function toDateInputValue(date: Date) {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, DatePipe, CardComponent, BadgeComponent, ButtonComponent],
+  imports: [RouterLink, DatePipe, CardComponent, BadgeComponent, ButtonComponent, IconComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

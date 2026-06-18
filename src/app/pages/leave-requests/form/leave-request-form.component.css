@@ -10,16 +10,19 @@
   align-items: center;
   background: var(--color-primary-light);
   border-radius: var(--radius);
-  padding: 14px 18px;
-  margin-bottom: 20px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border-left: 4px solid var(--color-primary);
 }
 .quota-banner strong {
-  font-size: 20px;
-  color: var(--color-primary-dark);
+  font-size: 22px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--color-primary);
 }
 
 .hint {
   margin: 6px 0 0;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-text-muted);
 }/*# sourceMappingURL=leave-request-form.component.css.map */
