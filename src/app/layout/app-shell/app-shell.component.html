@@ -1,9 +1,17 @@
+@if (mobileOpen()) {
+  <div class="sidebar-backdrop" (click)="closeMobileSidebar()"></div>
+}
+
 <aside class="sidebar">
-  <div class="sidebar-brand"><span class="dot"></span>Absensi</div>
+  <div class="sidebar-brand">
+    <span class="dot"></span>
+    <span class="brand-text">Absensi</span>
+  </div>
   <nav>
     @for (item of navItems(); track item.path) {
-      <a [routerLink]="item.path" routerLinkActive="active" class="nav-link">
-        {{ item.label }}
+      <a [routerLink]="item.path" routerLinkActive="active" class="nav-link" [title]="item.label">
+        <app-icon [name]="item.icon" [size]="22" class="nav-icon"></app-icon>
+        <span class="nav-label">{{ item.label }}</span>
         @if (item.path === '/notifikasi' && notifications.unreadCount() > 0) {
           <span class="nav-badge">{{ notifications.unreadCount() }}</span>
         }
@@ -13,11 +21,20 @@
 </aside>
 
 <header class="topbar">
-  <div class="topbar-title">{{ pageTitle }}</div>
+  <div class="topbar-left">
+    <button class="icon-btn sidebar-toggle" type="button" (click)="toggleSidebar()" aria-label="Buka/tutup menu">
+      <app-icon name="menu" class="show-mobile" [size]="22"></app-icon>
+      <app-icon [name]="collapsed() ? 'chevron-right' : 'chevron-left'" class="show-desktop" [size]="22"></app-icon>
+    </button>
+    <div class="topbar-title">{{ pageTitle }}</div>
+  </div>
   <div class="topbar-user">
     <div class="avatar">{{ avatarInitial() }}</div>
-    <span>{{ displayName() }}</span>
-    <button class="logout-btn" type="button" (click)="logout()">Keluar</button>
+    <span class="user-name">{{ displayName() }}</span>
+    <button class="logout-btn" type="button" (click)="logout()" title="Keluar">
+      <app-icon name="logout" [size]="18"></app-icon>
+      <span class="logout-text">Keluar</span>
+    </button>
   </div>
 </header>
 
