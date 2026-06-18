@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, startWith, switchMap } from 'rxjs';
 import { CardComponent } from '../../../shared/components/card/card.component';
@@ -12,7 +13,7 @@ import { Division, Employee } from '../../../core/models/entities';
 @Component({
   selector: 'app-employee-list',
   standalone: true,
-  imports: [ReactiveFormsModule, CardComponent, BadgeComponent, ButtonComponent],
+  imports: [ReactiveFormsModule, RouterLink, CardComponent, BadgeComponent, ButtonComponent],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss',
 })
@@ -20,6 +21,7 @@ export class EmployeeListComponent implements OnInit {
   private employeeService = inject(EmployeeService);
   private divisionService = inject(DivisionService);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
   protected auth = inject(AuthService);
 
   employees = signal<Employee[]>([]);
@@ -58,5 +60,9 @@ export class EmployeeListComponent implements OnInit {
         },
         error: () => this.loading.set(false),
       });
+  }
+
+  goToCreate() {
+    this.router.navigate(['/karyawan/tambah']);
   }
 }

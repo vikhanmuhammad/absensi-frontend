@@ -6,6 +6,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 16px;
+
+  app-card {
+    margin-bottom: 0;
+  }
 }
 
 .project-card h3 {

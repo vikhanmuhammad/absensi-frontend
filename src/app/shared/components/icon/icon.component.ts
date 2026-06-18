@@ -12,6 +12,9 @@ export type IconName =
   | 'briefcase'
   | 'user-check'
   | 'clipboard-list'
+  | 'clipboard-edit'
+  | 'user-plus'
+  | 'timetable'
   | 'bar-chart'
   | 'bell'
   | 'user-circle'
@@ -21,6 +24,7 @@ export type IconName =
   | 'close'
   | 'chevron-left'
   | 'chevron-right'
+  | 'chevron-down'
   | 'logout';
 
 // Pemetaan nama ikon abstrak -> class Remixicon (https://remixicon.com), supaya pemakaian
@@ -37,6 +41,9 @@ const ICON_MAP: Record<IconName, string> = {
   briefcase: 'ri-briefcase-line',
   'user-check': 'ri-user-add-line',
   'clipboard-list': 'ri-clipboard-line',
+  'clipboard-edit': 'ri-clipboard-line',
+  'user-plus': 'ri-user-add-line',
+  timetable: 'ri-calendar-event-line',
   'bar-chart': 'ri-bar-chart-line',
   bell: 'ri-notification-line',
   'user-circle': 'ri-user-line',
@@ -46,6 +53,7 @@ const ICON_MAP: Record<IconName, string> = {
   close: 'ri-close-line',
   'chevron-left': 'ri-arrow-left-s-line',
   'chevron-right': 'ri-arrow-right-s-line',
+  'chevron-down': 'ri-arrow-down-s-line',
   logout: 'ri-logout-box-r-line',
 };
 

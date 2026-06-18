@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.filter-row {
+  margin-bottom: 0;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}/*# sourceMappingURL=employee-list.component.css.map */

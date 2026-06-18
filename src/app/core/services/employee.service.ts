@@ -33,6 +33,12 @@ export class EmployeeService {
       .pipe(map((res) => res.data));
   }
 
+  create(data: Record<string, unknown>) {
+    return this.http
+      .post<ApiEnvelope<Employee>>(this.base, data, { withCredentials: true })
+      .pipe(map((res) => res.data));
+  }
+
   update(id: string, data: Partial<Employee>) {
     return this.http
       .patch<ApiEnvelope<Employee>>(`${this.base}/${id}`, data, { withCredentials: true })

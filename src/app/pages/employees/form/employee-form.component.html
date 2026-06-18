@@ -1,0 +1,165 @@
+<app-card>
+  <h2>{{ isEditMode ? 'Edit Data Karyawan' : 'Tambah Karyawan Baru' }}</h2>
+
+  @if (error()) {
+    <div class="error-banner">{{ error() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="employee-form">
+    @if (!isEditMode) {
+      <h3 class="section-title">Akun Login</h3>
+      <div class="form-grid cols-2">
+        <div class="form-group">
+          <label for="username">Username *</label>
+          <input id="username" type="text" formControlName="username" placeholder="Username untuk login" />
+          @if (form.get('username')?.touched && form.get('username')?.errors) {
+            <span class="field-error">Username wajib diisi (min. 3 karakter)</span>
+          }
+        </div>
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input id="password" type="password" formControlName="password" placeholder="Min. 6 karakter" />
+          @if (form.get('password')?.touched && form.get('password')?.errors) {
+            <span class="field-error">Password wajib diisi (min. 6 karakter)</span>
+          }
+        </div>
+      </div>
+
+      <h3 class="section-title">Data Diri</h3>
+      <div class="form-grid cols-2">
+        <div class="form-group">
+          <label for="nik">NIK *</label>
+          <input id="nik" type="text" formControlName="nik" placeholder="Nomor Induk Karyawan" />
+        </div>
+        <div class="form-group">
+          <label for="namaLengkap">Nama Lengkap *</label>
+          <input id="namaLengkap" type="text" formControlName="namaLengkap" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input id="email" type="email" formControlName="email" />
+        </div>
+        <div class="form-group">
+          <label for="noHp">No. HP *</label>
+          <input id="noHp" type="text" formControlName="noHp" />
+        </div>
+        <div class="form-group full-width">
+          <label for="alamat">Alamat *</label>
+          <textarea id="alamat" formControlName="alamat" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="tanggalLahir">Tanggal Lahir *</label>
+          <input id="tanggalLahir" type="date" formControlName="tanggalLahir" />
+        </div>
+        <div class="form-group">
+          <label for="jenisKelamin">Jenis Kelamin *</label>
+          <select id="jenisKelamin" formControlName="jenisKelamin">
+            <option value="L">Laki-laki</option>
+            <option value="P">Perempuan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="statusPernikahan">Status Pernikahan *</label>
+          <select id="statusPernikahan" formControlName="statusPernikahan">
+            <option value="BELUM MENIKAH">Belum Menikah</option>
+            <option value="MENIKAH">Menikah</option>
+            <option value="CERAI">Cerai</option>
+          </select>
+        </div>
+      </div>
+
+      <h3 class="section-title">Data Kepegawaian</h3>
+      <div class="form-grid cols-2">
+        <div class="form-group">
+          <label for="jabatan">Jabatan *</label>
+          <input id="jabatan" type="text" formControlName="jabatan" />
+        </div>
+        <div class="form-group">
+          <label for="divisiId">Divisi *</label>
+          <select id="divisiId" formControlName="divisiId">
+            <option value="">— Pilih Divisi —</option>
+            @for (d of divisions(); track d.id) {
+              <option [value]="d.id">{{ d.namaDivisi }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="statusKaryawan">Status Karyawan *</label>
+          <select id="statusKaryawan" formControlName="statusKaryawan">
+            <option value="TETAP">Tetap</option>
+            <option value="KONTRAK">Kontrak</option>
+            <option value="HARIAN">Harian</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tanggalMulaiKerja">Tanggal Mulai Kerja *</label>
+          <input id="tanggalMulaiKerja" type="date" formControlName="tanggalMulaiKerja" />
+        </div>
+        <div class="form-group">
+          <label for="tanggalAkhirKontrak">Tanggal Akhir Kontrak</label>
+          <input id="tanggalAkhirKontrak" type="date" formControlName="tanggalAkhirKontrak" />
+        </div>
+      </div>
+
+      <h3 class="section-title">Upah & Lembur</h3>
+      <div class="form-grid cols-2">
+        <div class="form-group">
+          <label for="nominalUpah">Nominal Upah *</label>
+          <input id="nominalUpah" type="number" formControlName="nominalUpah" placeholder="0" />
+        </div>
+        <div class="form-group">
+          <label for="satuanUpah">Satuan Upah *</label>
+          <select id="satuanUpah" formControlName="satuanUpah">
+            <option value="PER_BULAN">Per Bulan</option>
+            <option value="PER_JAM">Per Jam</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="nominalUpahLembur">Nominal Upah Lembur *</label>
+          <input id="nominalUpahLembur" type="number" formControlName="nominalUpahLembur" placeholder="0" />
+        </div>
+        <div class="form-group">
+          <label for="pengaliLembur">Pengali Lembur</label>
+          <input id="pengaliLembur" type="number" formControlName="pengaliLembur" placeholder="1.5" step="0.1" />
+        </div>
+      </div>
+    } @else {
+      <div class="form-grid cols-2">
+        <div class="form-group">
+          <label for="e-namaLengkap">Nama Lengkap *</label>
+          <input id="e-namaLengkap" type="text" formControlName="namaLengkap" />
+        </div>
+        <div class="form-group">
+          <label for="e-email">Email *</label>
+          <input id="e-email" type="email" formControlName="email" />
+        </div>
+        <div class="form-group">
+          <label for="e-noHp">No. HP *</label>
+          <input id="e-noHp" type="text" formControlName="noHp" />
+        </div>
+        <div class="form-group">
+          <label for="e-jabatan">Jabatan *</label>
+          <input id="e-jabatan" type="text" formControlName="jabatan" />
+        </div>
+        <div class="form-group full-width">
+          <label for="e-alamat">Alamat *</label>
+          <textarea id="e-alamat" formControlName="alamat" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="e-statusAktif">Status Aktif</label>
+          <select id="e-statusAktif" formControlName="statusAktif">
+            <option [ngValue]="true">Aktif</option>
+            <option [ngValue]="false">Nonaktif</option>
+          </select>
+        </div>
+      </div>
+    }
+
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (btnClick)="cancel()">Batal</app-button>
+      <app-button variant="primary" [disabled]="loading()">
+        {{ loading() ? 'Menyimpan...' : (isEditMode ? 'Simpan Perubahan' : 'Buat Karyawan') }}
+      </app-button>
+    </div>
+  </form>
+</app-card>

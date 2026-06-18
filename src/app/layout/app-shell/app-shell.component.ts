@@ -12,69 +12,91 @@ interface NavItem {
   roles: Role[];
 }
 
+interface NavGroup {
+  label: string;
+  icon: IconName;
+  roles: Role[];
+  children: NavItem[];
+}
+
 const SIDEBAR_COLLAPSED_KEY = 'absensi:sidebarCollapsed';
 const MOBILE_BREAKPOINT = 768;
 
-// Daftar menu sidebar didefinisikan SEKALI di sini (lihat docs/copilot-guides/frontend-guide.md "Aturan Konsistensi").
-// Detail Karyawan, Detail Projek, dan Request Manpower sengaja tidak ditaruh di sini karena memerlukan
-// parameter :id dari halaman daftar/induknya — diakses lewat routerLink kontekstual, bukan menu statis.
-const NAV_ITEMS: NavItem[] = [
-  { path: '/dashboard', label: 'Dashboard', icon: 'grid', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
-  { path: '/absensi', label: 'Absensi Harian', icon: 'clock', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
+const NAV_GROUPS: NavGroup[] = [
   {
-    path: '/absensi/riwayat',
-    label: 'Riwayat Absensi',
-    icon: 'calendar',
-    roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'],
+    label: 'Dashboard',
+    icon: 'grid',
+    roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'],
+    children: [
+      { path: '/dashboard', label: 'Dashboard', icon: 'grid', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+    ],
   },
   {
-    path: '/pengajuan/cuti',
-    label: 'Pengajuan Cuti',
+    label: 'Absensi',
+    icon: 'clock',
+    roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'],
+    children: [
+      { path: '/absensi', label: 'Absensi Harian', icon: 'clock', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
+      { path: '/absensi/riwayat', label: 'Riwayat Absensi', icon: 'calendar', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
+      { path: '/absensi/massal', label: 'Input Absensi Massal', icon: 'clipboard-edit', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+    ],
+  },
+  {
+    label: 'Pengajuan',
     icon: 'file-check',
     roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'],
+    children: [
+      { path: '/pengajuan/cuti', label: 'Cuti / Izin', icon: 'file-check', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
+      { path: '/pengajuan/lembur', label: 'Lembur Individual', icon: 'clock-plus', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
+      { path: '/pengajuan/lembur-massal', label: 'Lembur Massal', icon: 'timetable', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+    ],
   },
   {
-    path: '/pengajuan/lembur',
-    label: 'Pengajuan Lembur',
-    icon: 'clock-plus',
-    roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'],
-  },
-  {
-    path: '/approval/pengajuan',
-    label: 'Approval Pengajuan',
+    label: 'Approval',
     icon: 'check-circle',
     roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'],
+    children: [
+      { path: '/approval/pengajuan', label: 'Approval Cuti/Izin', icon: 'check-circle', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+      { path: '/approval/manpower', label: 'Approval Manpower', icon: 'user-check', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+    ],
   },
-  { path: '/karyawan', label: 'Data Karyawan', icon: 'users', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
-  { path: '/akun', label: 'Manajemen Akun', icon: 'id-card', roles: ['SUPER_ADMIN', 'HRD'] },
   {
-    path: '/projek',
-    label: 'Daftar Projek',
+    label: 'Karyawan & Akun',
+    icon: 'users',
+    roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'],
+    children: [
+      { path: '/karyawan', label: 'Data Karyawan', icon: 'users', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+      { path: '/akun', label: 'Manajemen Akun', icon: 'id-card', roles: ['SUPER_ADMIN', 'HRD'] },
+      { path: '/divisi', label: 'Manajemen Divisi', icon: 'building', roles: ['SUPER_ADMIN', 'HRD'] },
+    ],
+  },
+  {
+    label: 'Projek',
     icon: 'briefcase',
     roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'],
+    children: [
+      { path: '/projek', label: 'Daftar Projek', icon: 'briefcase', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
+      { path: '/penugasan/riwayat', label: 'Riwayat Penugasan', icon: 'clipboard-list', roles: ['SUPER_ADMIN', 'HRD'] },
+    ],
   },
   {
-    path: '/approval/manpower',
-    label: 'Approval Manpower',
-    icon: 'user-check',
-    roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'],
-  },
-  { path: '/penugasan/riwayat', label: 'Riwayat Penugasan', icon: 'clipboard-list', roles: ['SUPER_ADMIN', 'HRD'] },
-  { path: '/laporan', label: 'Laporan Absensi', icon: 'bar-chart', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
-  {
-    path: '/notifikasi',
-    label: 'Notifikasi',
-    icon: 'bell',
+    label: 'Laporan & Notifikasi',
+    icon: 'bar-chart',
     roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'],
+    children: [
+      { path: '/laporan', label: 'Laporan Absensi', icon: 'bar-chart', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+      { path: '/notifikasi', label: 'Notifikasi', icon: 'bell', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
+    ],
   },
   {
-    path: '/profil',
-    label: 'Profil Saya',
+    label: 'Profil & Pengaturan',
     icon: 'user-circle',
     roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'],
+    children: [
+      { path: '/profil', label: 'Profil Saya', icon: 'user-circle', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
+      { path: '/pengaturan', label: 'Pengaturan Sistem', icon: 'sliders', roles: ['SUPER_ADMIN'] },
+    ],
   },
-  { path: '/divisi', label: 'Manajemen Divisi', icon: 'building', roles: ['SUPER_ADMIN', 'HRD'] },
-  { path: '/pengaturan', label: 'Pengaturan Sistem', icon: 'sliders', roles: ['SUPER_ADMIN'] },
 ];
 
 @Component({
@@ -95,15 +117,20 @@ export class AppShellComponent implements OnInit, OnDestroy {
 
   collapsed = signal(this.readCollapsedPreference());
   mobileOpen = signal(false);
+  openGroups = signal<Set<string>>(new Set());
 
   private routerSub?: Subscription;
 
   ngOnInit() {
     this.notifications.list().subscribe();
 
-    // Tutup sidebar mobile otomatis setiap kali pindah halaman (back/forward/klik link).
+    // Buka grup yang mengandung rute aktif saat init
+    this.syncOpenGroups();
+
+    // Tutup sidebar mobile otomatis setiap kali pindah halaman.
     this.routerSub = this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
       this.mobileOpen.set(false);
+      this.syncOpenGroups();
     });
   }
 
@@ -111,10 +138,13 @@ export class AppShellComponent implements OnInit, OnDestroy {
     this.routerSub?.unsubscribe();
   }
 
-  navItems = computed(() => {
+  navGroups = computed(() => {
     const role = this.auth.currentUser()?.role;
     if (!role) return [];
-    return NAV_ITEMS.filter((item) => item.roles.includes(role));
+    return NAV_GROUPS.filter((g) => g.roles.includes(role)).map((g) => ({
+      ...g,
+      children: g.children.filter((c) => c.roles.includes(role)),
+    }));
   });
 
   displayName = computed(
@@ -123,15 +153,25 @@ export class AppShellComponent implements OnInit, OnDestroy {
 
   avatarInitial = computed(() => (this.displayName().charAt(0) || '?').toUpperCase());
 
-  // TODO: untuk judul topbar yang lebih reaktif, pertimbangkan toSignal(router.events) —
-  // getter ini sudah cukup karena Angular Router memicu change detection setiap navigasi.
   get pageTitle(): string {
     let route = this.router.routerState.snapshot.root;
     while (route.firstChild) route = route.firstChild;
     return (route.data?.['title'] as string) || 'Absensi';
   }
 
-  /** Satu tombol di topbar: di mobile membuka/menutup drawer, di desktop collapse/expand ke mode ikon saja. */
+  isGroupOpen(label: string): boolean {
+    return this.openGroups().has(label);
+  }
+
+  toggleGroup(label: string) {
+    this.openGroups.update((set) => {
+      const next = new Set(set);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
+  }
+
   toggleSidebar() {
     if (window.innerWidth < MOBILE_BREAKPOINT) {
       this.mobileOpen.update((v) => !v);
@@ -148,11 +188,24 @@ export class AppShellComponent implements OnInit, OnDestroy {
     this.mobileOpen.set(false);
   }
 
-  private readCollapsedPreference(): boolean {
-    return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true';
-  }
-
   logout() {
     this.auth.logout().subscribe();
+  }
+
+  private syncOpenGroups() {
+    const url = this.router.url;
+    const open = new Set<string>();
+    for (const group of NAV_GROUPS) {
+      if (group.children.some((c) => url.startsWith(c.path))) {
+        open.add(group.label);
+      }
+    }
+    // Dashboard: selalu buka karena single-child
+    if (url.startsWith('/dashboard')) open.add('Dashboard');
+    this.openGroups.set(open);
+  }
+
+  private readCollapsedPreference(): boolean {
+    return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true';
   }
 }

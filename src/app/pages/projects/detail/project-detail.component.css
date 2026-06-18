@@ -1,0 +1,20 @@
+:host {
+  display: block;
+}
+
+dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 10px 12px;
+  font-size: 14px;
+}
+
+dt {
+  color: var(--color-text-muted);
+}
+
+dd {
+  margin: 0;
+  font-weight: 500;
+}/*# sourceMappingURL=project-detail.component.css.map */

@@ -84,6 +84,34 @@
   }
 }
 
+.nav-group-parent {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+
+  .nav-chevron {
+    margin-left: auto;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  &.open .nav-chevron {
+    transform: rotate(180deg);
+  }
+}
+
+.nav-children {
+  padding-left: 16px;
+}
+
+.nav-child {
+  font-size: 13px;
+  padding: 9px 12px;
+}
+
 .nav-icon {
   flex-shrink: 0;
 }
@@ -121,6 +149,14 @@
   top: 4px;
   right: 14px;
   margin-left: 0;
+}
+
+:host.collapsed .nav-children {
+  display: none;
+}
+
+:host.collapsed .nav-chevron {
+  display: none;
 }
 
 .topbar {
@@ -230,6 +266,9 @@
   grid-area: content;
   padding: 24px;
   overflow-y: auto;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 // ---------- Tablet (768–1023px): sembunyikan nama user supaya topbar tidak sesak ----------
@@ -307,5 +346,6 @@
 
   .content {
     padding: 16px;
+    max-width: 100%;
   }
 }

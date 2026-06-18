@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  margin-bottom: 20px;
+}
+
+:host:last-child {
+  margin-bottom: 0;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+}/*# sourceMappingURL=card.component.css.map */

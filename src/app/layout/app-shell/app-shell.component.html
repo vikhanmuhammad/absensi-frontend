@@ -8,14 +8,33 @@
     <span class="brand-text">Absensi</span>
   </div>
   <nav>
-    @for (item of navItems(); track item.path) {
-      <a [routerLink]="item.path" routerLinkActive="active" class="nav-link" [title]="item.label">
-        <app-icon [name]="item.icon" [size]="22" class="nav-icon"></app-icon>
-        <span class="nav-label">{{ item.label }}</span>
-        @if (item.path === '/notifikasi' && notifications.unreadCount() > 0) {
-          <span class="nav-badge">{{ notifications.unreadCount() }}</span>
+    @for (group of navGroups(); track group.label) {
+      @if (group.children.length === 1) {
+        <!-- Single item: render langsung tanpa expand -->
+        <a [routerLink]="group.children[0].path" routerLinkActive="active" class="nav-link" [title]="group.children[0].label">
+          <app-icon [name]="group.children[0].icon" [size]="22" class="nav-icon"></app-icon>
+          <span class="nav-label">{{ group.children[0].label }}</span>
+        </a>
+      } @else {
+        <!-- Group: parent expandable -->
+        <button class="nav-link nav-group-parent" [class.open]="isGroupOpen(group.label)" (click)="toggleGroup(group.label)" [title]="group.label">
+          <app-icon [name]="group.icon" [size]="22" class="nav-icon"></app-icon>
+          <span class="nav-label">{{ group.label }}</span>
+          <app-icon name="chevron-down" [size]="16" class="nav-chevron"></app-icon>
+        </button>
+        @if (isGroupOpen(group.label)) {
+          <div class="nav-children">
+            @for (child of group.children; track child.path) {
+              <a [routerLink]="child.path" routerLinkActive="active" class="nav-link nav-child" [title]="child.label">
+                <span class="nav-label">{{ child.label }}</span>
+                @if (child.path === '/notifikasi' && notifications.unreadCount() > 0) {
+                  <span class="nav-badge">{{ notifications.unreadCount() }}</span>
+                }
+              </a>
+            }
+          </div>
         }
-      </a>
+      }
     }
   </nav>
 </aside>

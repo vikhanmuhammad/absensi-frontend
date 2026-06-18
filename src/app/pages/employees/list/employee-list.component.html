@@ -4,7 +4,7 @@
     <p>{{ employees().length }} karyawan ditemukan</p>
   </div>
   @if (canCreate) {
-    <app-button [disabled]="true" title="Fitur tambah karyawan akan datang">+ Tambah Karyawan</app-button>
+    <app-button variant="primary" (btnClick)="goToCreate()">+ Tambah Karyawan</app-button>
   }
 </div>
 
@@ -50,7 +50,12 @@
           <td>
             <app-badge [variant]="item.statusAktif ? 'success' : 'muted'">{{ item.statusAktif ? 'Aktif' : 'Nonaktif' }}</app-badge>
           </td>
-          <td><app-button variant="outline" [routerLink]="['/karyawan', item.id]">Lihat</app-button></td>
+          <td class="actions-cell">
+            <app-button variant="outline" [routerLink]="['/karyawan', item.id]">Lihat</app-button>
+            @if (canCreate) {
+              <app-button variant="outline" [routerLink]="['/karyawan', item.id, 'edit']">Edit</app-button>
+            }
+          </td>
         </tr>
       }
     </table>

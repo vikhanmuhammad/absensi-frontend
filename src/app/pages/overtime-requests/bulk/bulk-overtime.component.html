@@ -1,0 +1,55 @@
+<app-card>
+  <h2>Pengajuan Lembur Massal</h2>
+  <p class="subtitle">Catat lembur untuk beberapa karyawan sekaligus. Status langsung tercatat otomatis.</p>
+
+  @if (error()) {
+    <div class="error-banner">{{ error() }}</div>
+  }
+  @if (success()) {
+    <div class="success-banner">{{ success() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="bulk-form">
+    <div class="form-grid cols-2">
+      <div class="form-group">
+        <label for="tanggal">Tanggal Lembur *</label>
+        <input id="tanggal" type="date" formControlName="tanggal" />
+      </div>
+      <div class="form-group">
+        <label for="deskripsi">Deskripsi/Alasan Lembur *</label>
+        <input id="deskripsi" type="text" formControlName="deskripsiAlasan" placeholder="Contoh: Lembur proyek deadline" />
+      </div>
+    </div>
+
+    <h3 class="section-title">Pilih Karyawan</h3>
+    @if (employees().length === 0) {
+      <p class="muted">Tidak ada karyawan aktif ditemukan.</p>
+    } @else {
+      <div class="select-all-row">
+        <label class="checkbox-label">
+          <input type="checkbox" [checked]="allSelected" (change)="toggleAll()" />
+          <span>Pilih Semua ({{ employees().length }} karyawan)</span>
+        </label>
+        <span class="selected-count">{{ selectedIds().size }} dipilih</span>
+      </div>
+      <div class="employee-grid">
+        @for (emp of employees(); track emp.id) {
+          <label class="employee-card" [class.selected]="isSelected(emp.id)">
+            <input type="checkbox" [checked]="isSelected(emp.id)" (change)="toggleSelect(emp.id)" />
+            <div class="emp-info">
+              <span class="emp-name">{{ emp.namaLengkap }}</span>
+              <span class="emp-meta">{{ emp.nik }} · {{ emp.divisi?.namaDivisi }}</span>
+            </div>
+          </label>
+        }
+      </div>
+    }
+
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (btnClick)="cancel()">Batal</app-button>
+      <app-button variant="primary" [disabled]="loading()">
+        {{ loading() ? 'Menyimpan...' : 'Simpan Lembur Massal' }}
+      </app-button>
+    </div>
+  </form>
+</app-card>

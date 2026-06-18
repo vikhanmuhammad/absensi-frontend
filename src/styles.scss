@@ -104,6 +104,10 @@ a {
   margin-bottom: 20px;
 }
 
+.grid-kpi app-card {
+  margin-bottom: 0;
+}
+
 .kpi-value {
   font-size: 26px;
   font-weight: 700;
@@ -197,6 +201,12 @@ th {
   outline: 2px solid var(--color-primary);
   outline-offset: 1px;
   border-color: var(--color-primary);
+}
+
+/* Card heading — jarak atas di-reset supaya card tidak punya padding atas berlebih */
+app-card h2,
+app-card h3 {
+  margin-top: 0;
 }
 
 .form-error {
