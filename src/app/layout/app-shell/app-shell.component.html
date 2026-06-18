@@ -2,7 +2,12 @@
   <div class="sidebar-brand"><span class="dot"></span>Absensi</div>
   <nav>
     @for (item of navItems(); track item.path) {
-      <a [routerLink]="item.path" routerLinkActive="active" class="nav-link">{{ item.label }}</a>
+      <a [routerLink]="item.path" routerLinkActive="active" class="nav-link">
+        {{ item.label }}
+        @if (item.path === '/notifikasi' && notifications.unreadCount() > 0) {
+          <span class="nav-badge">{{ notifications.unreadCount() }}</span>
+        }
+      </a>
     }
   </nav>
 </aside>

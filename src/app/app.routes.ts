@@ -14,9 +14,10 @@ export const routes: Routes = [
     component: AppShellComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: '', pathMatch: 'full', redirectTo: 'absensi' },
       {
         path: 'dashboard',
+        canActivate: [roleGuard(['SUPER_ADMIN', 'HRD', 'SUPERVISOR'])],
         loadComponent: () => import('./pages/dashboard/dashboard.component').then((m) => m.DashboardComponent),
         data: { title: 'Dashboard' },
       },
@@ -145,5 +146,5 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: 'dashboard' },
+  { path: '**', redirectTo: 'absensi' },
 ];

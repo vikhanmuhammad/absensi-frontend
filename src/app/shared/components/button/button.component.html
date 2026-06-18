@@ -1,9 +1,23 @@
-<button
-  class="btn"
-  [class.btn-primary]="variant === 'primary'"
-  [class.btn-outline]="variant === 'outline'"
-  [type]="type"
-  [disabled]="disabled"
->
-  <ng-content></ng-content>
-</button>
+@if (routerLink) {
+  <a
+    class="btn"
+    [class.btn-primary]="variant === 'primary'"
+    [class.btn-outline]="variant === 'outline'"
+    [class.btn-full]="fullWidth"
+    [class.btn-disabled]="disabled"
+    [routerLink]="disabled ? null : routerLink"
+  >
+    <ng-content></ng-content>
+  </a>
+} @else {
+  <button
+    class="btn"
+    [class.btn-primary]="variant === 'primary'"
+    [class.btn-outline]="variant === 'outline'"
+    [class.btn-full]="fullWidth"
+    [type]="type"
+    [disabled]="disabled"
+  >
+    <ng-content></ng-content>
+  </button>
+}

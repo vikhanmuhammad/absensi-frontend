@@ -10,7 +10,8 @@ export function roleGuard(allowedRoles: Role[]): CanActivateFn {
     const role = auth.currentUser()?.role;
     if (role && allowedRoles.includes(role)) return true;
 
-    router.navigateByUrl('/dashboard');
+    // '/absensi' dipilih sebagai fallback karena bisa diakses semua role (lihat NAV_ITEMS di AppShellComponent).
+    router.navigateByUrl('/absensi');
     return false;
   };
 }

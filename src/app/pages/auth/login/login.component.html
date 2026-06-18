@@ -1,0 +1,49 @@
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">A</div>
+    <p class="login-title">Sistem Absensi Karyawan</p>
+    <p class="login-subtitle">PT Mitra Karya Sejahtera</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label for="username">NIK / Username</label>
+        <input type="text" id="username" formControlName="username" placeholder="Contoh: karyawan1" autocomplete="username" />
+        @if (form.controls.username.invalid && form.controls.username.touched) {
+          <p class="field-error">Username wajib diisi</p>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Kata Sandi</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          placeholder="Masukkan kata sandi"
+          autocomplete="current-password"
+        />
+        @if (form.controls.password.invalid && form.controls.password.touched) {
+          <p class="field-error">Kata sandi wajib diisi</p>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p class="login-error">{{ errorMessage() }}</p>
+      }
+
+      <div class="login-options">
+        <span class="checkbox-row">
+          <input type="checkbox" id="remember" />
+          <label for="remember">Ingat saya</label>
+        </span>
+        <a href="#">Lupa kata sandi?</a>
+      </div>
+
+      <app-button type="submit" [fullWidth]="true" [disabled]="loading()">
+        {{ loading() ? 'Memproses...' : 'Masuk' }}
+      </app-button>
+    </form>
+
+    <p class="login-help">Akun terkunci atau bermasalah? <a href="#">Hubungi HRD</a></p>
+  </div>
+</div>

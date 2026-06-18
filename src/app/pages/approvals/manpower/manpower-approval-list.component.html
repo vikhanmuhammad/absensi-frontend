@@ -1,0 +1,76 @@
+<div class="page-header">
+  <div>
+    <h1>Approval Manpower</h1>
+    <p>Permintaan alokasi karyawan dari divisi Anda untuk kebutuhan projek</p>
+  </div>
+</div>
+
+@if (errorMessage()) {
+  <p class="form-error">{{ errorMessage() }}</p>
+}
+
+<app-card>
+  <h3>Menunggu Tindakan Anda</h3>
+  @if (loading()) {
+    <p class="muted">Memuat data...</p>
+  } @else if (pending().length === 0) {
+    <p class="muted">Tidak ada request manpower yang menunggu approval.</p>
+  } @else {
+    <table>
+      <tr>
+        <th>Projek</th>
+        <th>Mode</th>
+        <th>Detail</th>
+        <th>Periode</th>
+        <th>Aksi</th>
+      </tr>
+      @for (item of pending(); track item.id) {
+        <tr>
+          <td>{{ item.project?.namaProjek }}</td>
+          <td>{{ item.mode === 'SPESIFIK' ? 'Spesifik' : 'Headcount' }}</td>
+          <td>
+            @if (item.mode === 'SPESIFIK') {
+              {{ item.employee?.namaLengkap }}
+            } @else {
+              <div>{{ item.jumlahDiminta }} orang — {{ item.kriteria }}</div>
+              <select
+                [ngModel]="selectedEmployee.get(item.id)"
+                (ngModelChange)="selectedEmployee.set(item.id, $event)"
+              >
+                <option value="" disabled selected>Pilih karyawan...</option>
+                @for (emp of candidatesFor(item.divisiAsalId); track emp.id) {
+                  <option [value]="emp.id">{{ emp.namaLengkap }}</option>
+                }
+              </select>
+            }
+          </td>
+          <td>{{ item.tanggalMulaiPenugasan | date: 'd MMM y' }} – {{ item.tanggalAkhirPenugasan | date: 'd MMM y' }}</td>
+          <td class="action-cell">
+            <app-button [disabled]="actingId() === item.id" (click)="approve(item)">Setujui</app-button>
+            <app-button variant="outline" [disabled]="actingId() === item.id" (click)="reject(item)">Tolak</app-button>
+          </td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>
+
+@if (processed().length > 0) {
+  <app-card>
+    <h3>Riwayat Diproses</h3>
+    <table>
+      <tr>
+        <th>Projek</th>
+        <th>Mode</th>
+        <th>Status</th>
+      </tr>
+      @for (item of processed(); track item.id) {
+        <tr>
+          <td>{{ item.project?.namaProjek }}</td>
+          <td>{{ item.mode === 'SPESIFIK' ? 'Spesifik' : 'Headcount' }}</td>
+          <td><app-badge [variant]="item.status === 'DISETUJUI' ? 'success' : 'danger'">{{ item.status }}</app-badge></td>
+        </tr>
+      }
+    </table>
+  </app-card>
+}

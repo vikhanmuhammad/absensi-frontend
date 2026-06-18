@@ -9,6 +9,7 @@
   cursor: pointer;
   border: 1px solid transparent;
   font-family: inherit;
+  text-decoration: none;
 }
 
 .btn-primary {
@@ -31,7 +32,18 @@
   }
 }
 
-.btn:disabled {
+.btn:disabled,
+.btn-disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-full {
+  width: 100%;
+  justify-content: center;
+}
+
+:host {
+  display: contents;
 }

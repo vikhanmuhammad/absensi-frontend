@@ -1,6 +1,7 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService, Role } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 interface NavItem {
   path: string;
@@ -37,9 +38,14 @@ const NAV_ITEMS: NavItem[] = [
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
-export class AppShellComponent {
+export class AppShellComponent implements OnInit {
   protected auth = inject(AuthService);
+  protected notifications = inject(NotificationService);
   private router = inject(Router);
+
+  ngOnInit() {
+    this.notifications.list().subscribe();
+  }
 
   navItems = computed(() => {
     const role = this.auth.currentUser()?.role;

@@ -1,0 +1,114 @@
+@if (project(); as p) {
+  @if (!isSpvOfThisProject()) {
+    <app-card>
+      <p class="muted">Hanya SPV Project yang ditunjuk untuk "{{ p.namaProjek }}" yang dapat mengajukan request manpower.</p>
+    </app-card>
+  } @else {
+    <div class="info-banner">
+      Projek: <strong>{{ p.namaProjek }}</strong> · Due Date {{ p.tanggalBerakhir | date: 'd MMMM y' }} — periode
+      penugasan tidak boleh melampaui tanggal ini.
+    </div>
+
+    <app-card>
+      <h3>Ajukan Request Manpower Baru</h3>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-group">
+          <label for="divisi">Divisi Tujuan</label>
+          <select id="divisi" formControlName="divisiAsalId">
+            <option value="" disabled>Pilih divisi...</option>
+            @for (d of divisions(); track d.id) {
+              <option [value]="d.id">{{ d.namaDivisi }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="mode">Mode</label>
+          <select id="mode" formControlName="mode">
+            <option value="SPESIFIK">Spesifik — pilih nama karyawan</option>
+            <option value="HEADCOUNT">Headcount — sebutkan jumlah & kriteria</option>
+          </select>
+        </div>
+
+        @if (form.controls.mode.value === 'SPESIFIK') {
+          <div class="form-group">
+            <label for="karyawan">Pilih Karyawan</label>
+            <select id="karyawan" formControlName="employeeId">
+              <option value="" disabled>Pilih karyawan...</option>
+              @for (emp of candidateEmployees(); track emp.id) {
+                <option [value]="emp.id">{{ emp.namaLengkap }} — {{ emp.jabatan }}</option>
+              }
+            </select>
+          </div>
+        } @else {
+          <div class="form-row">
+            <div class="form-group">
+              <label for="jumlah">Jumlah Diminta</label>
+              <input type="number" id="jumlah" min="1" formControlName="jumlahDiminta" />
+            </div>
+            <div class="form-group">
+              <label for="kriteria">Kriteria</label>
+              <input type="text" id="kriteria" formControlName="kriteria" placeholder="Contoh: pengalaman alat ukur presisi" />
+            </div>
+          </div>
+        }
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="mulai">Tanggal Mulai Penugasan</label>
+            <input type="date" id="mulai" formControlName="tanggalMulaiPenugasan" />
+          </div>
+          <div class="form-group">
+            <label for="akhir">Tanggal Akhir Penugasan</label>
+            <input type="date" id="akhir" formControlName="tanggalAkhirPenugasan" />
+          </div>
+        </div>
+
+        @if (errorMessage()) {
+          <p class="form-error">{{ errorMessage() }}</p>
+        }
+        @if (successMessage()) {
+          <p class="form-success">{{ successMessage() }}</p>
+        }
+
+        <app-button type="submit" [disabled]="submitting()">{{ submitting() ? 'Mengirim...' : 'Kirim Request Manpower' }}</app-button>
+      </form>
+    </app-card>
+  }
+
+  <app-card>
+    <h3>Riwayat Request Manpower Projek Ini</h3>
+    @if (!p.manpowerRequests || p.manpowerRequests.length === 0) {
+      <p class="muted">Belum ada request manpower.</p>
+    } @else {
+      <table>
+        <tr>
+          <th>Divisi Tujuan</th>
+          <th>Mode</th>
+          <th>Detail</th>
+          <th>Periode</th>
+          <th>Status</th>
+        </tr>
+        @for (m of p.manpowerRequests; track m.id) {
+          <tr>
+            <td>{{ m.divisiAsal?.namaDivisi }}</td>
+            <td>{{ m.mode === 'SPESIFIK' ? 'Spesifik' : 'Headcount' }}</td>
+            <td>
+              @if (m.mode === 'SPESIFIK') {
+                {{ m.employee?.namaLengkap }}
+              } @else {
+                {{ m.jumlahDiminta }} orang — {{ m.kriteria }}
+              }
+            </td>
+            <td>{{ m.tanggalMulaiPenugasan | date: 'd MMM y' }} – {{ m.tanggalAkhirPenugasan | date: 'd MMM y' }}</td>
+            <td><app-badge [variant]="statusVariant(m.status)">{{ m.status }}</app-badge></td>
+          </tr>
+        }
+      </table>
+    }
+  </app-card>
+} @else if (loading()) {
+  <p class="muted">Memuat data projek...</p>
+} @else {
+  <app-card><p class="muted">Projek tidak ditemukan.</p></app-card>
+}

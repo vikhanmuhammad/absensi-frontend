@@ -1,0 +1,75 @@
+<div class="page-header">
+  <div>
+    <h1>Laporan & Rekap Absensi</h1>
+    <p>Rekap kehadiran sesuai filter periode dan divisi</p>
+  </div>
+  <div class="toolbar">
+    <app-button variant="outline" (click)="print()">⬇ Export / Print</app-button>
+  </div>
+</div>
+
+<form [formGroup]="filterForm" (ngSubmit)="load()" class="filter-row">
+  <input type="date" formControlName="startDate" />
+  <span class="muted">s/d</span>
+  <input type="date" formControlName="endDate" />
+  <select formControlName="divisiId">
+    <option value="">Semua Divisi</option>
+    @for (d of divisions(); track d.id) {
+      <option [value]="d.id">{{ d.namaDivisi }}</option>
+    }
+  </select>
+  <select formControlName="projectId">
+    <option value="">Semua Projek</option>
+    @for (p of projects(); track p.id) {
+      <option [value]="p.id">{{ p.namaProjek }}</option>
+    }
+  </select>
+  <app-button type="submit">Terapkan Filter</app-button>
+</form>
+
+@if (report(); as r) {
+  <div class="grid-kpi">
+    <app-card>
+      <div class="kpi-value">{{ r.totalRecords }}</div>
+      <div class="kpi-label">Total Kehadiran Tercatat</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-success">{{ totalHadir() }}</div>
+      <div class="kpi-label">Total Hadir</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-warning">{{ totalTerlambat() }}</div>
+      <div class="kpi-label">Total Keterlambatan</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-danger">{{ totalAlfa() }}</div>
+      <div class="kpi-label">Total Alfa</div>
+    </app-card>
+  </div>
+
+  <app-card>
+    <h3>Rekap per Divisi</h3>
+    @if (r.perDivisi.length === 0) {
+      <p class="muted">Tidak ada data pada periode ini.</p>
+    } @else {
+      <table>
+        <tr>
+          <th>Divisi</th>
+          <th>Hadir</th>
+          <th>Terlambat</th>
+          <th>Alfa</th>
+        </tr>
+        @for (row of r.perDivisi; track row.divisiId) {
+          <tr>
+            <td>{{ row.namaDivisi }}</td>
+            <td>{{ row.hadir }}</td>
+            <td>{{ row.terlambat }}</td>
+            <td>{{ row.alfa }}</td>
+          </tr>
+        }
+      </table>
+    }
+  </app-card>
+} @else if (loading()) {
+  <p class="muted">Memuat data...</p>
+}

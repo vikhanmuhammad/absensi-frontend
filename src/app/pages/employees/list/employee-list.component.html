@@ -1,0 +1,58 @@
+<div class="page-header">
+  <div>
+    <h1>Data Karyawan</h1>
+    <p>{{ employees().length }} karyawan ditemukan</p>
+  </div>
+  @if (canCreate) {
+    <app-button [disabled]="true" title="Fitur tambah karyawan akan datang">+ Tambah Karyawan</app-button>
+  }
+</div>
+
+<form [formGroup]="filterForm" class="filter-row">
+  <input type="text" formControlName="search" placeholder="Cari nama atau NIK..." />
+  <select formControlName="divisiId">
+    <option value="">Semua Divisi</option>
+    @for (d of divisions(); track d.id) {
+      <option [value]="d.id">{{ d.namaDivisi }}</option>
+    }
+  </select>
+  <select formControlName="statusKaryawan">
+    <option value="">Semua Status</option>
+    <option value="TETAP">Tetap</option>
+    <option value="KONTRAK">Kontrak</option>
+    <option value="HARIAN">Harian</option>
+  </select>
+</form>
+
+<app-card>
+  @if (loading()) {
+    <p class="muted">Memuat data...</p>
+  } @else if (employees().length === 0) {
+    <p class="muted">Tidak ada karyawan yang cocok dengan filter.</p>
+  } @else {
+    <table>
+      <tr>
+        <th>NIK</th>
+        <th>Nama</th>
+        <th>Divisi</th>
+        <th>Jabatan</th>
+        <th>Status Karyawan</th>
+        <th>Status Aktif</th>
+        <th>Aksi</th>
+      </tr>
+      @for (item of employees(); track item.id) {
+        <tr>
+          <td>{{ item.nik }}</td>
+          <td>{{ item.namaLengkap }}</td>
+          <td>{{ item.divisi?.namaDivisi }}</td>
+          <td>{{ item.jabatan }}</td>
+          <td>{{ item.statusKaryawan }}</td>
+          <td>
+            <app-badge [variant]="item.statusAktif ? 'success' : 'muted'">{{ item.statusAktif ? 'Aktif' : 'Nonaktif' }}</app-badge>
+          </td>
+          <td><app-button variant="outline" [routerLink]="['/karyawan', item.id]">Lihat</app-button></td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>

@@ -1,0 +1,111 @@
+@if (employee(); as emp) {
+  <app-card class="profile-header">
+    <div class="profile-photo">{{ initial() }}</div>
+    <div>
+      <p class="profile-name">{{ emp.namaLengkap }}</p>
+      <p class="profile-meta">NIK {{ emp.nik }} · {{ emp.jabatan }} · Divisi {{ emp.divisi?.namaDivisi }}</p>
+      <app-badge [variant]="emp.statusAktif ? 'success' : 'muted'">{{ emp.statusAktif ? 'Aktif' : 'Nonaktif' }}</app-badge>
+      <app-badge variant="info">{{ emp.statusKaryawan }}</app-badge>
+    </div>
+    <div class="profile-actions">
+      <app-button variant="outline" [disabled]="saving()" (click)="toggleActive()">
+        {{ emp.statusAktif ? 'Nonaktifkan' : 'Aktifkan' }}
+      </app-button>
+    </div>
+  </app-card>
+
+  @if (message()) {
+    <p class="form-success">{{ message() }}</p>
+  }
+
+  <div class="grid-2">
+    <app-card>
+      <h3>Data Diri</h3>
+      <dl>
+        <dt>Email</dt>
+        <dd>{{ emp.email }}</dd>
+        <dt>No. HP</dt>
+        <dd>{{ emp.noHp }}</dd>
+        <dt>Tanggal Lahir</dt>
+        <dd>{{ emp.tanggalLahir | date: 'd MMMM y' }}</dd>
+        <dt>Jenis Kelamin</dt>
+        <dd>{{ emp.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}</dd>
+        <dt>Status Nikah</dt>
+        <dd>{{ emp.statusPernikahan }}</dd>
+        <dt>Alamat</dt>
+        <dd>{{ emp.alamat }}</dd>
+      </dl>
+    </app-card>
+    <app-card>
+      <h3>Data Kepegawaian</h3>
+      <dl>
+        <dt>Jabatan</dt>
+        <dd>{{ emp.jabatan }}</dd>
+        <dt>Divisi</dt>
+        <dd>{{ emp.divisi?.namaDivisi }}</dd>
+        <dt>Status Karyawan</dt>
+        <dd>{{ emp.statusKaryawan }}</dd>
+        <dt>Tgl. Mulai Kerja</dt>
+        <dd>{{ emp.tanggalMulaiKerja | date: 'd MMMM y' }}</dd>
+        @if (emp.tanggalAkhirKontrak) {
+          <dt>Tgl. Akhir Kontrak</dt>
+          <dd>{{ emp.tanggalAkhirKontrak | date: 'd MMMM y' }}</dd>
+        }
+        <dt>Upah</dt>
+        <dd>Rp {{ emp.nominalUpah | number }} / {{ emp.satuanUpah === 'PER_BULAN' ? 'bulan' : 'jam' }}</dd>
+        <dt>Upah Lembur</dt>
+        <dd>Rp {{ emp.nominalUpahLembur | number }}</dd>
+      </dl>
+    </app-card>
+  </div>
+
+  <app-card>
+    <h3>Riwayat Absensi Terkini</h3>
+    @if (attendances().length === 0) {
+      <p class="muted">Belum ada data absensi.</p>
+    } @else {
+      <table>
+        <tr>
+          <th>Tanggal</th>
+          <th>Jam Masuk</th>
+          <th>Jam Keluar</th>
+          <th>Status</th>
+        </tr>
+        @for (item of attendances(); track item.id) {
+          <tr>
+            <td>{{ item.tanggal | date: 'd MMM y' }}</td>
+            <td>{{ item.jamMasuk ? (item.jamMasuk | date: 'HH:mm') : '—' }}</td>
+            <td>{{ item.jamKeluar ? (item.jamKeluar | date: 'HH:mm') : '—' }}</td>
+            <td><app-badge [variant]="statusVariant(item.statusKehadiran)">{{ statusLabel(item.statusKehadiran) }}</app-badge></td>
+          </tr>
+        }
+      </table>
+    }
+  </app-card>
+
+  <app-card>
+    <h3>Riwayat Cuti / Izin</h3>
+    @if (leaveRequests().length === 0) {
+      <p class="muted">Belum ada pengajuan cuti/izin.</p>
+    } @else {
+      <table>
+        <tr>
+          <th>Jenis</th>
+          <th>Periode</th>
+          <th>Status</th>
+        </tr>
+        @for (item of leaveRequests(); track item.id) {
+          <tr>
+            <td>{{ jenisLabel(item.jenisCuti) }}</td>
+            <td>{{ item.tanggalMulai | date: 'd MMM y' }} – {{ item.tanggalSelesai | date: 'd MMM y' }}</td>
+            <td><app-badge [variant]="leaveVariant(item.status)">{{ item.status }}</app-badge></td>
+          </tr>
+        }
+      </table>
+    }
+  </app-card>
+} @else if (loading()) {
+  <p class="muted">Memuat data karyawan...</p>
+} @else {
+  <app-card><p class="muted">Karyawan tidak ditemukan.</p></app-card>
+}

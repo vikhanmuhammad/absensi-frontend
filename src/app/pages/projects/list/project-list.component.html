@@ -1,0 +1,69 @@
+<div class="page-header">
+  <div>
+    <h1>Daftar Projek</h1>
+    <p>Kelola projek lintas divisi dan SPV Project yang ditunjuk</p>
+  </div>
+  @if (canCreate) {
+    <app-button (click)="toggleForm()">{{ showForm() ? 'Batal' : '+ Buat Projek Baru' }}</app-button>
+  }
+</div>
+
+@if (showForm()) {
+  <app-card>
+    <h3>Buat Projek Baru</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label for="nama">Nama Projek</label>
+        <input type="text" id="nama" formControlName="namaProjek" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="mulai">Tanggal Mulai</label>
+          <input type="date" id="mulai" formControlName="tanggalMulai" />
+        </div>
+        <div class="form-group">
+          <label for="akhir">Tanggal Berakhir (Due Date)</label>
+          <input type="date" id="akhir" formControlName="tanggalBerakhir" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="deskripsi">Deskripsi (opsional)</label>
+        <textarea id="deskripsi" rows="2" formControlName="deskripsi"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="spv">SPV Project</label>
+        <select id="spv" formControlName="spvProjectEmployeeId">
+          <option value="" disabled>Pilih karyawan...</option>
+          @for (emp of employees(); track emp.id) {
+            <option [value]="emp.id">{{ emp.namaLengkap }} — {{ emp.jabatan }}</option>
+          }
+        </select>
+      </div>
+      @if (errorMessage()) {
+        <p class="form-error">{{ errorMessage() }}</p>
+      }
+      <app-button type="submit" [disabled]="submitting()">{{ submitting() ? 'Menyimpan...' : 'Simpan Projek' }}</app-button>
+    </form>
+  </app-card>
+}
+
+@if (loading()) {
+  <p class="muted">Memuat data...</p>
+} @else if (projects().length === 0) {
+  <app-card><p class="muted">Belum ada projek.</p></app-card>
+} @else {
+  <div class="project-grid">
+    @for (item of projects(); track item.id) {
+      <app-card class="project-card">
+        <h3>{{ item.namaProjek }}</h3>
+        <p class="project-meta">SPV Project: <strong>{{ item.spvProject?.namaLengkap }}</strong></p>
+        <p class="project-meta">{{ item.tanggalMulai | date: 'd MMM y' }} – {{ item.tanggalBerakhir | date: 'd MMM y' }}</p>
+        <p class="project-meta">{{ item._count?.assignments ?? 0 }} anggota</p>
+        <div class="project-footer">
+          <app-badge [variant]="statusVariant(item.status)">{{ statusLabel(item.status) }}</app-badge>
+          <app-button variant="outline" [routerLink]="['/projek', item.id]">Lihat Detail</app-button>
+        </div>
+      </app-card>
+    }
+  </div>
+}

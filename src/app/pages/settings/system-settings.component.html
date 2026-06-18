@@ -1,0 +1,93 @@
+@if (savedMessage()) {
+  <p class="form-success">{{ savedMessage() }}</p>
+}
+
+<app-card>
+  <h3>Jam Kerja & Toleransi Keterlambatan</h3>
+  <form [formGroup]="workHoursForm" (ngSubmit)="saveWorkHours()">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="jam-masuk">Jam Masuk Reguler</label>
+        <input type="time" id="jam-masuk" formControlName="jamMasuk" />
+      </div>
+      <div class="form-group">
+        <label for="jam-pulang">Jam Pulang Reguler</label>
+        <input type="time" id="jam-pulang" formControlName="jamPulang" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="batas-terlambat">Batas Waktu Status "Terlambat"</label>
+        <input type="time" id="batas-terlambat" formControlName="batasTerlambat" />
+      </div>
+      <div class="form-group">
+        <label for="batas-alfa">Batas Waktu Status "Alfa"</label>
+        <input type="time" id="batas-alfa" formControlName="batasAlfa" />
+      </div>
+    </div>
+    <app-button type="submit">Simpan Pengaturan</app-button>
+  </form>
+</app-card>
+
+<app-card>
+  <h3>Kalender Hari Libur Nasional</h3>
+  <table>
+    <tr>
+      <th>Tanggal</th>
+      <th>Keterangan</th>
+    </tr>
+    @for (h of holidays(); track h.tanggal) {
+      <tr>
+        <td>{{ h.tanggal }}</td>
+        <td>{{ h.keterangan }}</td>
+      </tr>
+    }
+  </table>
+  <p class="hint">Catatan: kalender ini belum terhubung ke backend, perubahan tidak tersimpan permanen pada versi ini.</p>
+</app-card>
+
+<app-card>
+  <h3>Sub-Jenis Akun Super Admin</h3>
+  @for (admin of superAdmins(); track admin.id) {
+    <div class="toggle-row">
+      <div>
+        <strong>{{ admin.employee?.namaLengkap || admin.username }} — {{ admin.superAdminType === 'IT_MAINTENANCE' ? 'IT/Maintenance' : 'Direktur' }}</strong>
+        <p>
+          @if (admin.superAdminType === 'IT_MAINTENANCE') {
+            Akses penuh untuk maintenance & pengujian, tombol approve/reject dinonaktifkan
+          } @else {
+            Kontrol & wewenang approval penuh atas seluruh pengajuan
+          }
+        </p>
+      </div>
+      @if (admin.superAdminType === 'IT_MAINTENANCE') {
+        <app-badge variant="info">Dibatasi dari Approval</app-badge>
+      } @else {
+        <app-badge variant="success">Aktif</app-badge>
+      }
+    </div>
+  }
+</app-card>
+
+<app-card>
+  <h3>Keamanan & Sesi</h3>
+  <form [formGroup]="securityForm" (ngSubmit)="saveSecurity()">
+    <div class="form-group">
+      <label for="timeout">Session Timeout Otomatis</label>
+      <select id="timeout" formControlName="sessionTimeout">
+        <option value="3">3 hari tidak aktif</option>
+        <option value="7">7 hari tidak aktif</option>
+        <option value="14">14 hari tidak aktif</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="backup">Jadwal Backup Data Otomatis</label>
+      <select id="backup" formControlName="backupSchedule">
+        <option value="harian">Setiap hari, pukul 23.00</option>
+        <option value="12jam">Setiap 12 jam</option>
+        <option value="mingguan">Setiap minggu</option>
+      </select>
+    </div>
+    <app-button type="submit">Simpan Pengaturan</app-button>
+  </form>
+</app-card>

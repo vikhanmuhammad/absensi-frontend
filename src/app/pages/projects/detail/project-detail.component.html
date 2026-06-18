@@ -1,0 +1,87 @@
+@if (project(); as p) {
+  <div class="page-header">
+    <div>
+      <h1>{{ p.namaProjek }}</h1>
+      <p>{{ p.deskripsi || 'Tidak ada deskripsi' }}</p>
+    </div>
+    <div class="toolbar">
+      @if (isSpvOfThisProject()) {
+        <app-button [routerLink]="['/projek', projectId, 'request-manpower']">+ Request Manpower</app-button>
+      }
+      @if (canExport()) {
+        <app-button variant="outline" (click)="print()">Export Laporan Anggota</app-button>
+      }
+    </div>
+  </div>
+
+  <app-card>
+    <dl>
+      <dt>Tanggal Mulai</dt>
+      <dd>{{ p.tanggalMulai | date: 'd MMMM y' }}</dd>
+      <dt>Tanggal Berakhir</dt>
+      <dd>{{ p.tanggalBerakhir | date: 'd MMMM y' }}</dd>
+      <dt>SPV Project</dt>
+      <dd>{{ p.spvProject?.namaLengkap }} ({{ p.spvProject?.jabatan }})</dd>
+      <dt>Status</dt>
+      <dd><app-badge [variant]="statusVariant(p.status)">{{ statusLabel(p.status) }}</app-badge></dd>
+    </dl>
+  </app-card>
+
+  <app-card>
+    <h3>Anggota Projek ({{ p.assignments?.length ?? 0 }})</h3>
+    @if (!p.assignments || p.assignments.length === 0) {
+      <p class="muted">Belum ada anggota ditugaskan ke projek ini.</p>
+    } @else {
+      <table>
+        <tr>
+          <th>Nama</th>
+          <th>Divisi Asal</th>
+          <th>Periode Penugasan</th>
+          <th>Status</th>
+        </tr>
+        @for (a of p.assignments; track a.id) {
+          <tr>
+            <td>{{ a.employee?.namaLengkap }}</td>
+            <td>{{ a.employee?.divisi?.namaDivisi }}</td>
+            <td>{{ a.tanggalMulai | date: 'd MMM y' }} – {{ a.tanggalBerakhir | date: 'd MMM y' }}</td>
+            <td>{{ a.status }}</td>
+          </tr>
+        }
+      </table>
+    }
+  </app-card>
+
+  <app-card>
+    <h3>Request Manpower Terkait Projek</h3>
+    @if (!p.manpowerRequests || p.manpowerRequests.length === 0) {
+      <p class="muted">Belum ada request manpower untuk projek ini.</p>
+    } @else {
+      <table>
+        <tr>
+          <th>Divisi Tujuan</th>
+          <th>Mode</th>
+          <th>Detail</th>
+          <th>Status</th>
+        </tr>
+        @for (m of p.manpowerRequests; track m.id) {
+          <tr>
+            <td>{{ m.divisiAsal?.namaDivisi }}</td>
+            <td>{{ m.mode === 'SPESIFIK' ? 'Spesifik' : 'Headcount' }}</td>
+            <td>
+              @if (m.mode === 'SPESIFIK') {
+                {{ m.employee?.namaLengkap }}
+              } @else {
+                {{ m.jumlahDiminta }} orang — {{ m.kriteria }}
+              }
+            </td>
+            <td><app-badge [variant]="manpowerVariant(m.status)">{{ m.status }}</app-badge></td>
+          </tr>
+        }
+      </table>
+    }
+  </app-card>
+} @else if (loading()) {
+  <p class="muted">Memuat data projek...</p>
+} @else {
+  <app-card><p class="muted">Projek tidak ditemukan.</p></app-card>
+}

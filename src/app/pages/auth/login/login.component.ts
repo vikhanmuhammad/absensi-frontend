@@ -1,43 +1,57 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../../core/services/auth.service';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
+
+interface ApiErrorBody {
+  success: false;
+  status: number;
+  error: { message: string };
+}
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  template: `
-    <div class="stub-wrap">
-      <div class="stub">
-        <h1>Login</h1>
-        <p>
-          Belum diimplementasikan. Gunakan prompt konversi #1 di
-          <code>docs/copilot-guides/frontend-guide.md</code> dengan acuan tampilan
-          <code>docs/design/login.html</code>.
-        </p>
-      </div>
-    </div>
-  `,
-  styles: [
-    `
-      .stub-wrap {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--font-family);
-        background: var(--color-bg);
-      }
-      .stub {
-        max-width: 420px;
-        padding: 24px;
-        text-align: center;
-        color: var(--color-text);
-      }
-      code {
-        background: var(--color-primary-light);
-        color: var(--color-primary-dark);
-        padding: 2px 6px;
-        border-radius: 4px;
-      }
-    `,
-  ],
+  imports: [ReactiveFormsModule, ButtonComponent],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
 })
-export class LoginComponent {}
+export class LoginComponent {
+  private fb = inject(FormBuilder);
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
+  form = this.fb.nonNullable.group({
+    username: ['', Validators.required],
+    password: ['', Validators.required],
+  });
+
+  loading = signal(false);
+  errorMessage = signal('');
+
+  submit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.loading.set(true);
+    this.errorMessage.set('');
+
+    const { username, password } = this.form.getRawValue();
+
+    this.auth.login(username, password).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.router.navigateByUrl('/dashboard');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading.set(false);
+        const body = err.error as ApiErrorBody | undefined;
+        this.errorMessage.set(body?.error?.message || 'Username atau password salah');
+      },
+    });
+  }
+}

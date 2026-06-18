@@ -1,10 +1,122 @@
-import { Component } from '@angular/core';
-import { PageStubComponent } from '../../../shared/components/page-stub/page-stub.component';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CardComponent } from '../../../shared/components/card/card.component';
+import { BadgeComponent, BadgeVariant } from '../../../shared/components/badge/badge.component';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { LeaveRequestService } from '../../../core/services/leave-request.service';
+import { JenisCuti, LeaveRequest, LeaveStatus } from '../../../core/models/entities';
+import { extractErrorMessage } from '../../../core/models/api-envelope';
+
+const ANNUAL_QUOTA = 12; // TODO: pindahkan ke perhitungan backend yang sesungguhnya (FR-REQ-06)
+
+const JENIS_LABEL: Record<JenisCuti, string> = {
+  IZIN: 'Izin',
+  CUTI_TAHUNAN: 'Cuti Tahunan',
+  SAKIT: 'Sakit',
+  MELAHIRKAN: 'Melahirkan',
+};
+
+const STATUS_LABEL: Record<LeaveStatus, string> = {
+  MENUNGGU: 'Menunggu',
+  DISETUJUI: 'Disetujui',
+  DITOLAK: 'Ditolak',
+};
+
+const STATUS_VARIANT: Record<LeaveStatus, BadgeVariant> = {
+  MENUNGGU: 'warning',
+  DISETUJUI: 'success',
+  DITOLAK: 'danger',
+};
 
 @Component({
   selector: 'app-leave-request-form',
   standalone: true,
-  imports: [PageStubComponent],
-  template: `<app-page-stub title="Pengajuan Cuti" prompt="#5" design="docs/design/pengajuan-cuti.html"></app-page-stub>`,
+  imports: [DatePipe, ReactiveFormsModule, CardComponent, BadgeComponent, ButtonComponent],
+  templateUrl: './leave-request-form.component.html',
+  styleUrl: './leave-request-form.component.scss',
 })
-export class LeaveRequestFormComponent {}
+export class LeaveRequestFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private leaveRequestService = inject(LeaveRequestService);
+
+  history = signal<LeaveRequest[]>([]);
+  loading = signal(true);
+  submitting = signal(false);
+  errorMessage = signal('');
+  successMessage = signal('');
+
+  form = this.fb.nonNullable.group({
+    jenisCuti: ['CUTI_TAHUNAN' as JenisCuti, Validators.required],
+    tanggalMulai: ['', Validators.required],
+    tanggalSelesai: ['', Validators.required],
+    alasan: ['', Validators.required],
+  });
+
+  needsDocument = computed(() => ['SAKIT', 'MELAHIRKAN'].includes(this.form.controls.jenisCuti.value));
+
+  usedDays = computed(() => {
+    const year = new Date().getFullYear();
+    return this.history()
+      .filter((item) => item.jenisCuti === 'CUTI_TAHUNAN' && item.status === 'DISETUJUI')
+      .filter((item) => new Date(item.tanggalMulai).getFullYear() === year)
+      .reduce((total, item) => {
+        const days =
+          (new Date(item.tanggalSelesai).getTime() - new Date(item.tanggalMulai).getTime()) / 86400000 + 1;
+        return total + Math.max(1, Math.round(days));
+      }, 0);
+  });
+
+  remainingDays = computed(() => Math.max(0, ANNUAL_QUOTA - this.usedDays()));
+
+  ngOnInit() {
+    this.load();
+  }
+
+  load() {
+    this.loading.set(true);
+    this.leaveRequestService.listMine().subscribe({
+      next: (data) => {
+        this.history.set(data);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
+  }
+
+  submit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.submitting.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    this.leaveRequestService.create(this.form.getRawValue()).subscribe({
+      next: () => {
+        this.submitting.set(false);
+        this.successMessage.set('Pengajuan cuti berhasil dikirim, menunggu approval.');
+        this.form.reset({ jenisCuti: 'CUTI_TAHUNAN', tanggalMulai: '', tanggalSelesai: '', alasan: '' });
+        this.load();
+      },
+      error: (err) => {
+        this.submitting.set(false);
+        this.errorMessage.set(extractErrorMessage(err, 'Gagal mengirim pengajuan cuti'));
+      },
+    });
+  }
+
+  jenisLabel(jenis: JenisCuti) {
+    return JENIS_LABEL[jenis];
+  }
+
+  statusLabel(status: LeaveStatus) {
+    return STATUS_LABEL[status];
+  }
+
+  statusVariant(status: LeaveStatus): BadgeVariant {
+    return STATUS_VARIANT[status];
+  }
+}

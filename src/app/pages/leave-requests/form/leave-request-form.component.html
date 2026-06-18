@@ -1,0 +1,73 @@
+<div class="quota-banner">
+  <div>Sisa Kuota Cuti Tahunan Anda</div>
+  <div><strong>{{ remainingDays() }}</strong> / 12 hari</div>
+</div>
+
+<app-card>
+  <h3>Ajukan Izin / Cuti Baru</h3>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-group">
+      <label for="jenis">Jenis Cuti</label>
+      <select id="jenis" formControlName="jenisCuti">
+        <option value="IZIN">Izin</option>
+        <option value="CUTI_TAHUNAN">Cuti Tahunan</option>
+        <option value="SAKIT">Sakit</option>
+        <option value="MELAHIRKAN">Melahirkan</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="mulai">Tanggal Mulai</label>
+        <input type="date" id="mulai" formControlName="tanggalMulai" />
+      </div>
+      <div class="form-group">
+        <label for="selesai">Tanggal Selesai</label>
+        <input type="date" id="selesai" formControlName="tanggalSelesai" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="alasan">Alasan</label>
+      <textarea id="alasan" rows="3" formControlName="alasan"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="dokumen">Upload Bukti Dokumen (khusus Sakit / Melahirkan)</label>
+      <input type="file" id="dokumen" [disabled]="!needsDocument()" />
+      @if (needsDocument()) {
+        <p class="hint">Catatan: upload dokumen belum terhubung ke penyimpanan berkas, lampirkan fisik ke HRD bila diminta.</p>
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <p class="form-error">{{ errorMessage() }}</p>
+    }
+    @if (successMessage()) {
+      <p class="form-success">{{ successMessage() }}</p>
+    }
+
+    <app-button type="submit" [disabled]="submitting()">{{ submitting() ? 'Mengirim...' : 'Ajukan Cuti' }}</app-button>
+  </form>
+</app-card>
+
+<app-card>
+  <h3>Riwayat Pengajuan Saya</h3>
+  @if (loading()) {
+    <p class="muted">Memuat data...</p>
+  } @else if (history().length === 0) {
+    <p class="muted">Belum ada pengajuan cuti.</p>
+  } @else {
+    <table>
+      <tr>
+        <th>Jenis</th>
+        <th>Periode</th>
+        <th>Status</th>
+      </tr>
+      @for (item of history(); track item.id) {
+        <tr>
+          <td>{{ jenisLabel(item.jenisCuti) }}</td>
+          <td>{{ item.tanggalMulai | date: 'd MMM y' }} – {{ item.tanggalSelesai | date: 'd MMM y' }}</td>
+          <td><app-badge [variant]="statusVariant(item.status)">{{ statusLabel(item.status) }}</app-badge></td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>

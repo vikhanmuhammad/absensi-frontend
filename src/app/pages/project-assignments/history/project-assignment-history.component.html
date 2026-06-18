@@ -1,0 +1,49 @@
+<div class="page-header">
+  <div>
+    <h1>Riwayat Penugasan Projek</h1>
+    <p>Jejak alokasi karyawan ke berbagai projek lintas divisi untuk kebutuhan rekap & audit</p>
+  </div>
+</div>
+
+<form [formGroup]="filterForm" class="filter-row">
+  <input type="text" formControlName="search" placeholder="Cari nama karyawan..." />
+  <select formControlName="projectId">
+    <option value="">Semua Projek</option>
+    @for (p of projects(); track p.id) {
+      <option [value]="p.id">{{ p.namaProjek }}</option>
+    }
+  </select>
+  <select formControlName="divisiId">
+    <option value="">Semua Divisi Asal</option>
+    @for (d of divisions(); track d.id) {
+      <option [value]="d.id">{{ d.namaDivisi }}</option>
+    }
+  </select>
+</form>
+
+<app-card>
+  @if (loading()) {
+    <p class="muted">Memuat data...</p>
+  } @else if (assignments().length === 0) {
+    <p class="muted">Tidak ada riwayat penugasan yang cocok dengan filter.</p>
+  } @else {
+    <table>
+      <tr>
+        <th>Nama Karyawan</th>
+        <th>Divisi Asal</th>
+        <th>Projek</th>
+        <th>Periode</th>
+        <th>Status</th>
+      </tr>
+      @for (item of assignments(); track item.id) {
+        <tr>
+          <td>{{ item.employee?.namaLengkap }}</td>
+          <td>{{ item.employee?.divisi?.namaDivisi }}</td>
+          <td>{{ item.project?.namaProjek }}</td>
+          <td>{{ item.tanggalMulai | date: 'd MMM y' }} – {{ item.tanggalBerakhir | date: 'd MMM y' }}</td>
+          <td><app-badge [variant]="item.status === 'AKTIF' ? 'success' : 'muted'">{{ item.status }}</app-badge></td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>

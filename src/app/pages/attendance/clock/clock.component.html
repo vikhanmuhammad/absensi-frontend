@@ -1,0 +1,85 @@
+<app-card class="clock-card">
+  <div class="clock-date">{{ now() | date: 'EEEE, d MMMM y' }}</div>
+  <div class="clock-time">{{ now() | date: 'HH:mm:ss' }}</div>
+
+  @if (loading()) {
+    <p class="muted">Memuat status absensi...</p>
+  } @else if (!hasClockedIn()) {
+    <p class="muted intro">Anda belum melakukan absen masuk hari ini.</p>
+  } @else {
+    <div class="status-pill">
+      <span class="dot"></span>
+      {{ hasClockedOut() ? 'Sudah Absen Pulang' : 'Sudah Absen Masuk' }} ·
+      {{ statusLabel(today()!.statusKehadiran) }}
+    </div>
+    <p class="muted intro">
+      Jam masuk tercatat <strong>{{ today()?.jamMasuk | date: 'HH:mm' }}</strong
+      >.
+      @if (!hasClockedOut()) {
+        Tekan tombol di bawah saat akan pulang.
+      }
+    </p>
+  }
+
+  @if (errorMessage()) {
+    <p class="form-error">{{ errorMessage() }}</p>
+  }
+
+  @if (!loading() && !hasClockedOut()) {
+    <app-button [fullWidth]="true" [disabled]="submitting()" (click)="hasClockedIn() ? clockOut() : clockIn()">
+      {{ submitting() ? 'Memproses...' : hasClockedIn() ? 'Absen Pulang' : 'Absen Masuk' }}
+    </app-button>
+  }
+
+  <div class="gps-note">📍 Lokasi diverifikasi otomatis di belakang layar (tidak ditampilkan)</div>
+</app-card>
+
+@if (!loading() && !hasClockedIn()) {
+  <app-card>
+    <h3>Detail Aktivitas Hari Ini</h3>
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label for="aktivitas">Nama Project / Aktivitas</label>
+        <input
+          type="text"
+          id="aktivitas"
+          formControlName="namaProjekAktivitas"
+          placeholder="Contoh: Maintenance Mesin Produksi Line 2"
+        />
+      </div>
+      <div class="form-group">
+        <label for="lokasi">Lokasi Kerja</label>
+        <select id="lokasi" formControlName="lokasiKerja">
+          <option value="KANTOR">Kantor</option>
+          <option value="LAINNYA">Lainnya</option>
+        </select>
+      </div>
+      @if (form.controls.lokasiKerja.value === 'LAINNYA') {
+        <div class="form-group">
+          <label for="lokasi-detail">Detail Lokasi</label>
+          <input type="text" id="lokasi-detail" formControlName="lokasiLainnyaDetail" placeholder="Sebutkan lokasi" />
+        </div>
+      }
+    </form>
+  </app-card>
+}
+
+@if (today(); as att) {
+  <app-card>
+    <h3>Ringkasan Hari Ini</h3>
+    <table>
+      <tr>
+        <th>Jam Masuk</th>
+        <th>Jam Keluar</th>
+        <th>Aktivitas</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>{{ att.jamMasuk ? (att.jamMasuk | date: 'HH:mm') : '—' }}</td>
+        <td>{{ att.jamKeluar ? (att.jamKeluar | date: 'HH:mm') : '—' }}</td>
+        <td>{{ att.namaProjekAktivitas }}</td>
+        <td><app-badge [variant]="statusVariant(att.statusKehadiran)">{{ statusLabel(att.statusKehadiran) }}</app-badge></td>
+      </tr>
+    </table>
+  </app-card>
+}

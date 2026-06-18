@@ -1,0 +1,28 @@
+<div class="page-header">
+  <div>
+    <h1>Notifikasi</h1>
+    <p>{{ unreadCount() }} belum dibaca</p>
+  </div>
+  @if (unreadCount() > 0) {
+    <app-button variant="outline" (click)="markAllAsRead()">Tandai Semua Dibaca</app-button>
+  }
+</div>
+
+<app-card>
+  @if (loading()) {
+    <p class="muted">Memuat notifikasi...</p>
+  } @else if (notifications().length === 0) {
+    <p class="muted">Belum ada notifikasi.</p>
+  } @else {
+    @for (item of notifications(); track item.id) {
+      <div class="notif-item" [class.unread]="!item.sudahDibaca" (click)="markAsRead(item)">
+        <div class="notif-icon">{{ icon(item.jenis) }}</div>
+        <div>
+          <p class="notif-title">{{ item.judul }}</p>
+          <p class="notif-text">{{ item.pesan }}</p>
+          <p class="notif-time">{{ item.createdAt | date: 'd MMM y, HH:mm' }}</p>
+        </div>
+      </div>
+    }
+  }
+</app-card>

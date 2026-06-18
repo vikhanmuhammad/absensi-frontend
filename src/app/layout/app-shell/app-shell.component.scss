@@ -59,6 +59,19 @@
   }
 }
 
+.nav-badge {
+  display: inline-block;
+  min-width: 18px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  border-radius: 999px;
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
 .topbar {
   grid-area: topbar;
   background: var(--color-surface);

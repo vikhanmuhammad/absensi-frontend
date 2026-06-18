@@ -1,0 +1,60 @@
+<div class="page-header">
+  <div>
+    <h1>Manajemen Divisi</h1>
+    <p>Struktur divisi dan supervisor penanggung jawab masing-masing</p>
+  </div>
+  <app-button (click)="openCreate()">+ Tambah Divisi</app-button>
+</div>
+
+@if (showForm()) {
+  <app-card>
+    <h3>{{ editingId() ? 'Edit Divisi' : 'Tambah Divisi' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label for="nama">Nama Divisi</label>
+        <input type="text" id="nama" formControlName="namaDivisi" />
+      </div>
+      <div class="form-group">
+        <label for="supervisor">Supervisor</label>
+        <select id="supervisor" formControlName="supervisorEmployeeId">
+          <option value="">Belum ditentukan</option>
+          @for (emp of employees(); track emp.id) {
+            <option [value]="emp.id">{{ emp.namaLengkap }} — {{ emp.jabatan }}</option>
+          }
+        </select>
+      </div>
+      @if (errorMessage()) {
+        <p class="form-error">{{ errorMessage() }}</p>
+      }
+      <div class="action-cell">
+        <app-button type="submit" [disabled]="submitting()">{{ submitting() ? 'Menyimpan...' : 'Simpan' }}</app-button>
+        <app-button variant="outline" type="button" (click)="cancel()">Batal</app-button>
+      </div>
+    </form>
+  </app-card>
+}
+
+<app-card>
+  @if (loading()) {
+    <p class="muted">Memuat data...</p>
+  } @else if (divisions().length === 0) {
+    <p class="muted">Belum ada divisi.</p>
+  } @else {
+    <table>
+      <tr>
+        <th>Nama Divisi</th>
+        <th>Supervisor</th>
+        <th>Jumlah Karyawan</th>
+        <th>Aksi</th>
+      </tr>
+      @for (item of divisions(); track item.id) {
+        <tr>
+          <td>{{ item.namaDivisi }}</td>
+          <td>{{ item.supervisor?.namaLengkap || '—' }}</td>
+          <td>{{ item._count?.employees ?? 0 }}</td>
+          <td><app-button variant="outline" (click)="openEdit(item)">Edit</app-button></td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>

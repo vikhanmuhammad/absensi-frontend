@@ -1,0 +1,53 @@
+@if (loading()) {
+  <p class="muted">Memuat profil...</p>
+} @else {
+  <app-card class="profile-header">
+    <div class="profile-photo">{{ initial() }}</div>
+    <div>
+      <p class="profile-name">{{ auth.currentUser()?.employee?.namaLengkap || auth.currentUser()?.username }}</p>
+      @if (employee(); as emp) {
+        <p class="profile-meta">NIK {{ emp.nik }} · {{ emp.jabatan }} · Divisi {{ emp.divisi?.namaDivisi }}</p>
+        <app-badge variant="success">{{ emp.statusKaryawan }} · Aktif</app-badge>
+      } @else {
+        <p class="profile-meta">{{ auth.currentUser()?.username }} · {{ auth.currentUser()?.role }}</p>
+      }
+    </div>
+  </app-card>
+
+  @if (employee(); as emp) {
+    <app-card>
+      <h3>Informasi Saya</h3>
+      <dl>
+        <dt>Email</dt>
+        <dd>{{ emp.email }}</dd>
+        <dt>No. HP</dt>
+        <dd>{{ emp.noHp }}</dd>
+        <dt>Tanggal Bergabung</dt>
+        <dd>{{ emp.tanggalMulaiKerja | date: 'd MMMM y' }}</dd>
+        <dt>Upah</dt>
+        <dd>Rp {{ emp.nominalUpah | number }} / {{ emp.satuanUpah === 'PER_BULAN' ? 'bulan' : 'jam' }}</dd>
+      </dl>
+    </app-card>
+  }
+
+  <app-card>
+    <h3>Ubah Kata Sandi</h3>
+    <p class="hint">Perubahan baru aktif setelah disetujui oleh atasan atau HRD.</p>
+    <form [formGroup]="form" (ngSubmit)="submitPasswordChange()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pw-baru">Kata Sandi Baru</label>
+          <input type="password" id="pw-baru" formControlName="passwordBaru" placeholder="Minimal 8 karakter" />
+        </div>
+        <div class="form-group">
+          <label for="pw-konfirmasi">Konfirmasi Kata Sandi Baru</label>
+          <input type="password" id="pw-konfirmasi" formControlName="konfirmasiPasswordBaru" placeholder="Ulangi kata sandi baru" />
+        </div>
+      </div>
+      @if (infoMessage()) {
+        <p class="form-error">{{ infoMessage() }}</p>
+      }
+      <app-button type="submit">Ajukan Perubahan Kata Sandi</app-button>
+    </form>
+  </app-card>
+}

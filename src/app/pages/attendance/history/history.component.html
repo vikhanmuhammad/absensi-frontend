@@ -1,0 +1,74 @@
+<div class="page-header">
+  <div>
+    <h1>Riwayat Absensi Saya</h1>
+    <p>Rekap kehadiran bulan {{ selectedMonthLabel() }}</p>
+  </div>
+  <app-button variant="outline" (click)="print()">⬇ Export / Print</app-button>
+</div>
+
+@if (!auth.currentUser()?.employee) {
+  <app-card>
+    <p class="muted">Akun ini tidak terhubung ke data karyawan, riwayat absensi tidak tersedia.</p>
+  </app-card>
+} @else {
+  <div class="filter-row">
+    <select [ngModel]="selectedMonth()" (ngModelChange)="selectedMonth.set($event); onFilterChange()">
+      @for (opt of monthOptions; track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
+    <select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+      <option value="ALL">Semua Status</option>
+      <option value="TEPAT_WAKTU">Tepat Waktu</option>
+      <option value="TERLAMBAT">Terlambat</option>
+      <option value="ALFA">Alfa</option>
+      <option value="PULANG_CEPAT">Pulang Cepat</option>
+    </select>
+  </div>
+
+  <div class="grid-kpi">
+    <app-card>
+      <div class="kpi-value">{{ totalHadir() }}</div>
+      <div class="kpi-label">Hari Hadir</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-warning">{{ totalTerlambat() }}</div>
+      <div class="kpi-label">Hari Terlambat</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-danger">{{ totalAlfa() }}</div>
+      <div class="kpi-label">Hari Alfa</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-info">{{ leaveCount() }}</div>
+      <div class="kpi-label">Cuti/Izin Disetujui</div>
+    </app-card>
+  </div>
+
+  <app-card>
+    @if (loading()) {
+      <p class="muted">Memuat data...</p>
+    } @else if (filteredRecords().length === 0) {
+      <p class="muted">Tidak ada data absensi pada periode ini.</p>
+    } @else {
+      <table>
+        <tr>
+          <th>Tanggal</th>
+          <th>Jam Masuk</th>
+          <th>Jam Keluar</th>
+          <th>Aktivitas</th>
+          <th>Status</th>
+        </tr>
+        @for (item of filteredRecords(); track item.id) {
+          <tr>
+            <td>{{ item.tanggal | date: 'd MMM y' }}</td>
+            <td>{{ item.jamMasuk ? (item.jamMasuk | date: 'HH:mm') : '—' }}</td>
+            <td>{{ item.jamKeluar ? (item.jamKeluar | date: 'HH:mm') : '—' }}</td>
+            <td>{{ item.namaProjekAktivitas }}</td>
+            <td><app-badge [variant]="statusVariant(item.statusKehadiran)">{{ statusLabel(item.statusKehadiran) }}</app-badge></td>
+          </tr>
+        }
+      </table>
+    }
+  </app-card>
+}

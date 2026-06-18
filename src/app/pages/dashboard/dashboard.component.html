@@ -1,0 +1,104 @@
+<div class="page-header">
+  <div>
+    <h1>{{ greeting() }}, {{ displayName() }}</h1>
+    <p>{{ today | date: 'EEEE, d MMMM y' }} · Ringkasan kehadiran seluruh perusahaan hari ini</p>
+  </div>
+  <app-button variant="outline" routerLink="/laporan">Lihat Laporan Lengkap</app-button>
+</div>
+
+@if (summary(); as s) {
+  <div class="grid-kpi">
+    <app-card>
+      <div class="kpi-value">{{ s.totalKaryawanAktif }}</div>
+      <div class="kpi-label">Total Karyawan Aktif</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-success">{{ s.hadirHariIni }}</div>
+      <div class="kpi-label">Hadir Hari Ini</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-warning">{{ s.terlambatHariIni }}</div>
+      <div class="kpi-label">Terlambat</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-danger">{{ s.alfaHariIni }}</div>
+      <div class="kpi-label">Alfa (Tidak Hadir)</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value kpi-info">{{ s.cutiAktif }}</div>
+      <div class="kpi-label">Sedang Cuti / Izin</div>
+    </app-card>
+  </div>
+} @else {
+  <p class="muted">Memuat ringkasan...</p>
+}
+
+<app-card>
+  <h3>Distribusi Kehadiran per Divisi (7 Hari Terakhir)</h3>
+  @if (attendanceReport(); as report) {
+    @if (report.perDivisi.length === 0) {
+      <p class="muted">Belum ada data kehadiran pada periode ini.</p>
+    }
+    @for (row of report.perDivisi; track row.divisiId) {
+      <div class="divisi-row">
+        <div class="divisi-row-label">
+          <span>{{ row.namaDivisi }}</span>
+          <span class="muted">{{ divisiPercentage(row.hadir, row.terlambat, row.alfa) }}% hadir</span>
+        </div>
+        <div class="divisi-bar-track">
+          <div class="divisi-bar-fill" [style.width.%]="divisiPercentage(row.hadir, row.terlambat, row.alfa)"></div>
+        </div>
+      </div>
+    }
+  }
+</app-card>
+
+<app-card>
+  <h3>Pengajuan Cuti/Izin Menunggu Approval</h3>
+  @if (pendingLeaveRequests().length === 0) {
+    <p class="muted">Tidak ada pengajuan yang menunggu approval.</p>
+  } @else {
+    <table>
+      <tr>
+        <th>Nama</th>
+        <th>Jenis</th>
+        <th>Tanggal</th>
+        <th>Status</th>
+      </tr>
+      @for (item of pendingLeaveRequests(); track item.id) {
+        <tr>
+          <td>{{ item.employee?.namaLengkap }}</td>
+          <td>{{ jenisCutiLabel(item.jenisCuti) }}</td>
+          <td>{{ item.tanggalMulai | date: 'd MMM y' }} – {{ item.tanggalSelesai | date: 'd MMM y' }}</td>
+          <td><app-badge variant="warning">Menunggu</app-badge></td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>
+
+<app-card>
+  <h3>Karyawan Terlambat Hari Ini</h3>
+  @if (loading()) {
+    <p class="muted">Memuat data...</p>
+  } @else if (lateToday().length === 0) {
+    <p class="muted">Tidak ada karyawan yang terlambat hari ini.</p>
+  } @else {
+    <table>
+      <tr>
+        <th>Nama</th>
+        <th>Divisi</th>
+        <th>Jam Masuk</th>
+        <th>Status</th>
+      </tr>
+      @for (item of lateToday(); track item.id) {
+        <tr>
+          <td>{{ item.employee?.namaLengkap }}</td>
+          <td>{{ item.employee?.divisi?.namaDivisi }}</td>
+          <td>{{ item.jamMasuk | date: 'HH:mm' }}</td>
+          <td><app-badge variant="warning">Terlambat</app-badge></td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>

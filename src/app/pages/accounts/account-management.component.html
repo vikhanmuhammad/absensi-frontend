@@ -1,0 +1,44 @@
+<div class="page-header">
+  <div>
+    <h1>Manajemen Akun</h1>
+    <p>Kelola akun login dan hak akses pengguna sistem</p>
+  </div>
+  <app-button [disabled]="true" title="Fitur pembuatan akun baru akan datang">+ Buat Akun Baru</app-button>
+</div>
+
+<app-card>
+  <h3>Daftar Akun Pengguna</h3>
+  @if (loading()) {
+    <p class="muted">Memuat data...</p>
+  } @else {
+    <table>
+      <tr>
+        <th>Username</th>
+        <th>Nama</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Terakhir Login</th>
+        <th>Aksi</th>
+      </tr>
+      @for (user of users(); track user.id) {
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.employee?.namaLengkap || '—' }}</td>
+          <td>{{ roleLabel(user) }}</td>
+          <td><app-badge [variant]="user.statusAktif ? 'success' : 'muted'">{{ user.statusAktif ? 'Aktif' : 'Nonaktif' }}</app-badge></td>
+          <td>{{ user.lastActiveAt ? (user.lastActiveAt | date: 'd MMM y, HH:mm') : '—' }}</td>
+          <td class="action-cell">
+            <app-button variant="outline" [disabled]="actingId() === user.id" (click)="toggleActive(user)">
+              {{ user.statusAktif ? 'Nonaktifkan' : 'Aktifkan' }}
+            </app-button>
+          </td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>
+
+<app-card>
+  <h3>Permintaan Perubahan Password Menunggu Approval</h3>
+  <p class="muted">Fitur pengajuan perubahan password belum terhubung ke backend pada versi ini.</p>
+</app-card>
