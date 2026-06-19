@@ -70,6 +70,15 @@ export const routes: Routes = [
         data: { title: 'Approval Pengajuan' },
       },
       {
+        path: 'approval/lembur',
+        canActivate: [roleGuard(['SUPER_ADMIN', 'HRD', 'SUPERVISOR'])],
+        loadComponent: () =>
+          import('./pages/approvals/overtime/overtime-approval-list.component').then(
+            (m) => m.OvertimeApprovalListComponent,
+          ),
+        data: { title: 'Approval Lembur' },
+      },
+      {
         path: 'karyawan',
         canActivate: [roleGuard(['SUPER_ADMIN', 'HRD', 'SUPERVISOR'])],
         loadComponent: () =>

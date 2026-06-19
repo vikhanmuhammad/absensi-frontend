@@ -57,6 +57,7 @@ const NAV_GROUPS: NavGroup[] = [
     roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'],
     children: [
       { path: '/approval/pengajuan', label: 'Approval Cuti/Izin', icon: 'check-circle', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+      { path: '/approval/lembur', label: 'Approval Lembur', icon: 'clock-plus', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
       { path: '/approval/manpower', label: 'Approval Manpower', icon: 'user-check', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
     ],
   },
@@ -118,6 +119,31 @@ export class AppShellComponent implements OnInit, OnDestroy {
   collapsed = signal(this.readCollapsedPreference());
   mobileOpen = signal(false);
   openGroups = signal<Set<string>>(new Set());
+  hoverGroupLabel = signal<string | null>(null);
+  hoverGroupTop = signal(0);
+
+  onGroupHover(event: MouseEvent, label: string) {
+    if (!this.collapsed()) return;
+    const btn = (event.currentTarget as HTMLElement).querySelector('.nav-group-parent');
+    if (btn) {
+      const rect = btn.getBoundingClientRect();
+      this.hoverGroupTop.set(rect.top);
+    }
+    this.hoverGroupLabel.set(label);
+  }
+
+  onGroupLeave() {
+    this.hoverGroupLabel.set(null);
+  }
+
+  onGroupClick(event: MouseEvent, group: NavGroup) {
+    if (this.collapsed()) {
+      // In collapsed mode, toggle is useless — navigate to first child instead
+      this.router.navigate([group.children[0].path]);
+    } else {
+      this.toggleGroup(group.label);
+    }
+  }
 
   private routerSub?: Subscription;
 
@@ -157,6 +183,11 @@ export class AppShellComponent implements OnInit, OnDestroy {
     let route = this.router.routerState.snapshot.root;
     while (route.firstChild) route = route.firstChild;
     return (route.data?.['title'] as string) || 'Absensi';
+  }
+
+  hasActiveChild(group: NavGroup): boolean {
+    const url = this.router.url;
+    return group.children.some((c) => url.startsWith(c.path));
   }
 
   isGroupOpen(label: string): boolean {

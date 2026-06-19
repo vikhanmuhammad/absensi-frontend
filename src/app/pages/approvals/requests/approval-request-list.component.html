@@ -1,7 +1,7 @@
 <div class="page-header">
   <div>
     <h1>Approval Pengajuan</h1>
-    <p>Persetujuan izin/cuti untuk bawahan langsung Anda</p>
+    <p>Persetujuan izin/cuti dan lembur individual dari bawahan langsung Anda</p>
   </div>
 </div>
 
@@ -18,6 +18,7 @@
   } @else {
     <table>
       <tr>
+        <th>Tipe</th>
         <th>Nama</th>
         <th>Divisi</th>
         <th>Jenis</th>
@@ -25,17 +26,22 @@
         <th>Alasan</th>
         <th>Aksi</th>
       </tr>
-      @for (item of pending(); track item.id) {
+      @for (item of pending(); track actKey(item.tipe, item.id)) {
         <tr>
-          <td>{{ item.employee?.namaLengkap }}</td>
-          <td>{{ item.employee?.divisi?.namaDivisi }}</td>
-          <td>{{ jenisLabel(item.jenisCuti) }}</td>
-          <td>{{ item.tanggalMulai | date: 'd MMM y' }} – {{ item.tanggalSelesai | date: 'd MMM y' }}</td>
+          <td>
+            <app-badge [variant]="item.tipe === 'LEAVE' ? 'info' : 'warning'">
+              {{ item.tipe === 'LEAVE' ? 'Izin/Cuti' : 'Lembur' }}
+            </app-badge>
+          </td>
+          <td>{{ item.nama }}</td>
+          <td>{{ item.divisi }}</td>
+          <td>{{ item.jenis }}</td>
+          <td>{{ item.tanggal }}</td>
           <td>{{ item.alasan }}</td>
           <td class="action-cell">
             @if (canApprove()) {
-              <app-button [disabled]="actingId() === item.id" (click)="approve(item)">Setujui</app-button>
-              <app-button variant="outline" [disabled]="actingId() === item.id" (click)="reject(item)">Tolak</app-button>
+              <app-button [disabled]="actingId() === actKey(item.tipe, item.id)" (click)="approve(item)">Setujui</app-button>
+              <app-button variant="outline" [disabled]="actingId() === actKey(item.tipe, item.id)" (click)="reject(item)">Tolak</app-button>
             } @else {
               <span class="muted">Tidak berwenang (IT/Maintenance)</span>
             }
@@ -51,14 +57,20 @@
     <h3>Baru Diproses</h3>
     <table>
       <tr>
+        <th>Tipe</th>
         <th>Jenis</th>
         <th>Tanggal</th>
         <th>Status</th>
       </tr>
-      @for (item of processedJustNow(); track item.id) {
+      @for (item of processedJustNow(); track item.tipe + '-' + item.id) {
         <tr>
-          <td>{{ jenisLabel(item.jenisCuti) }}</td>
-          <td>{{ item.tanggalMulai | date: 'd MMM y' }} – {{ item.tanggalSelesai | date: 'd MMM y' }}</td>
+          <td>
+            <app-badge [variant]="item.tipe === 'LEAVE' ? 'info' : 'warning'">
+              {{ item.tipe === 'LEAVE' ? 'Izin/Cuti' : 'Lembur' }}
+            </app-badge>
+          </td>
+          <td>{{ item.jenis }}</td>
+          <td>{{ item.tanggal }}</td>
           <td>
             <app-badge [variant]="item.status === 'DISETUJUI' ? 'success' : 'danger'">
               {{ item.status === 'DISETUJUI' ? 'Disetujui' : 'Ditolak' }}

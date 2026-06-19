@@ -16,13 +16,22 @@
           <span class="nav-label">{{ group.children[0].label }}</span>
         </a>
       } @else {
-        <!-- Group: parent expandable -->
-        <button class="nav-link nav-group-parent" [class.open]="isGroupOpen(group.label)" (click)="toggleGroup(group.label)" [title]="group.label">
-          <app-icon [name]="group.icon" [size]="22" class="nav-icon"></app-icon>
-          <span class="nav-label">{{ group.label }}</span>
-          <app-icon name="chevron-down" [size]="16" class="nav-chevron"></app-icon>
-        </button>
-        @if (isGroupOpen(group.label)) {
+        <!-- Group: parent expandable — nav-children always in DOM for CSS hover popup when collapsed -->
+        <div class="nav-group-wrap"
+             [class.open]="isGroupOpen(group.label)"
+             [class.has-active-child]="hasActiveChild(group)"
+             [style.--popup-top.px]="hoverGroupTop()"
+             (mouseenter)="onGroupHover($event, group.label)"
+             (mouseleave)="onGroupLeave()">
+          <button class="nav-link nav-group-parent"
+                  [class.open]="isGroupOpen(group.label)"
+                  [class.active]="hasActiveChild(group)"
+                  (click)="onGroupClick($event, group)"
+                  [title]="group.label">
+            <app-icon [name]="group.icon" [size]="22" class="nav-icon"></app-icon>
+            <span class="nav-label">{{ group.label }}</span>
+            <app-icon name="chevron-down" [size]="16" class="nav-chevron"></app-icon>
+          </button>
           <div class="nav-children">
             @for (child of group.children; track child.path) {
               <a [routerLink]="child.path" routerLinkActive="active" class="nav-link nav-child" [title]="child.label">
@@ -33,7 +42,7 @@
               </a>
             }
           </div>
-        }
+        </div>
       }
     }
   </nav>

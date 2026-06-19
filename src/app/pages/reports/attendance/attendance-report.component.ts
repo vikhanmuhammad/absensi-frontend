@@ -68,4 +68,24 @@ export class AttendanceReportComponent implements OnInit {
   print() {
     window.print();
   }
+
+  exportPdf() {
+    const value = this.filterForm.getRawValue();
+    this.reportService.downloadPdf({
+      startDate: value.startDate || undefined,
+      endDate: value.endDate || undefined,
+      divisiId: value.divisiId ? Number(value.divisiId) : undefined,
+      projectId: value.projectId ? Number(value.projectId) : undefined,
+    });
+  }
+
+  exportExcel() {
+    const value = this.filterForm.getRawValue();
+    this.reportService.downloadExcel({
+      startDate: value.startDate || undefined,
+      endDate: value.endDate || undefined,
+      divisiId: value.divisiId ? Number(value.divisiId) : undefined,
+      projectId: value.projectId ? Number(value.projectId) : undefined,
+    });
+  }
 }

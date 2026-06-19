@@ -133,6 +133,7 @@ export type OvertimeStatus = 'DIAJUKAN' | 'DISETUJUI' | 'DITOLAK' | 'DICATAT_OTO
 export interface OvertimeRequest {
   id: number;
   employeeId: number | null;
+  employee?: Employee;
   jenis: OvertimeJenis;
   tanggal: string;
   deskripsiAlasan: string;

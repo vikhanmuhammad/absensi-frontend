@@ -1,6 +1,9 @@
 @if (savedMessage()) {
   <p class="form-success">{{ savedMessage() }}</p>
 }
+@if (errorMessage()) {
+  <p class="form-error">{{ errorMessage() }}</p>
+}
 
 <app-card>
   <h3>Jam Kerja & Toleransi Keterlambatan</h3>
@@ -25,7 +28,7 @@
         <input type="time" id="batas-alfa" formControlName="batasAlfa" />
       </div>
     </div>
-    <app-button type="submit">Simpan Pengaturan</app-button>
+    <app-button type="submit" [disabled]="savingWorkHours()">{{ savingWorkHours() ? 'Menyimpan...' : 'Simpan Pengaturan' }}</app-button>
   </form>
 </app-card>
 

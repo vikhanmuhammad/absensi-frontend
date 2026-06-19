@@ -34,4 +34,42 @@ export class ReportService {
       .get<ApiEnvelope<AttendanceReport>>(`${this.base}/attendance`, { params, withCredentials: true })
       .pipe(map((res) => res.data));
   }
+
+  downloadPdf(filter: AttendanceReportFilter = {}) {
+    const params = new URLSearchParams();
+    if (filter.startDate) params.set('startDate', filter.startDate);
+    if (filter.endDate) params.set('endDate', filter.endDate);
+    if (filter.divisiId) params.set('divisiId', String(filter.divisiId));
+    if (filter.projectId) params.set('projectId', String(filter.projectId));
+
+    const url = `${this.base}/attendance/export-pdf?${params.toString()}`;
+    this.http
+      .get(url, { withCredentials: true, responseType: 'blob' })
+      .subscribe((blob) => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'laporan-absensi.pdf';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+  }
+
+  downloadExcel(filter: AttendanceReportFilter = {}) {
+    const params = new URLSearchParams();
+    if (filter.startDate) params.set('startDate', filter.startDate);
+    if (filter.endDate) params.set('endDate', filter.endDate);
+    if (filter.divisiId) params.set('divisiId', String(filter.divisiId));
+    if (filter.projectId) params.set('projectId', String(filter.projectId));
+
+    const url = `${this.base}/attendance/export-excel?${params.toString()}`;
+    this.http
+      .get(url, { withCredentials: true, responseType: 'blob' })
+      .subscribe((blob) => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'laporan-absensi.xlsx';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+  }
 }
