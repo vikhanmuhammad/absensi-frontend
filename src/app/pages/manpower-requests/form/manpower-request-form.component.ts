@@ -65,7 +65,7 @@ export class ManpowerRequestFormComponent implements OnInit {
 
     this.divisionService.list().subscribe((data) => this.divisions.set(data));
 
-    this.projectService.getById(id).subscribe({
+    this.projectService.getById(Number(id)).subscribe({
       next: (data) => {
         this.project.set(data);
         this.loading.set(false);
@@ -77,7 +77,7 @@ export class ManpowerRequestFormComponent implements OnInit {
       this.candidateEmployees.set([]);
       this.form.controls.employeeId.setValue('');
       if (divisiId) {
-        this.employeeService.list({ divisiId }).subscribe((data) => this.candidateEmployees.set(data));
+        this.employeeService.list({ divisiId: Number(divisiId) }).subscribe((data) => this.candidateEmployees.set(data));
       }
     });
   }
@@ -95,10 +95,10 @@ export class ManpowerRequestFormComponent implements OnInit {
 
     this.manpowerRequestService
       .create({
-        projectId: this.projectId,
-        divisiAsalId: value.divisiAsalId,
+        projectId: Number(this.projectId),
+        divisiAsalId: Number(value.divisiAsalId),
         mode: value.mode,
-        employeeId: value.mode === 'SPESIFIK' ? value.employeeId : undefined,
+        employeeId: value.mode === 'SPESIFIK' && value.employeeId ? Number(value.employeeId) : undefined,
         jumlahDiminta: value.mode === 'HEADCOUNT' ? value.jumlahDiminta : undefined,
         kriteria: value.mode === 'HEADCOUNT' ? value.kriteria : undefined,
         tanggalMulaiPenugasan: value.tanggalMulaiPenugasan,
@@ -108,7 +108,7 @@ export class ManpowerRequestFormComponent implements OnInit {
         next: () => {
           this.submitting.set(false);
           this.successMessage.set('Request manpower berhasil diajukan.');
-          this.projectService.getById(this.projectId).subscribe((data) => this.project.set(data));
+          this.projectService.getById(Number(this.projectId)).subscribe((data) => this.project.set(data));
         },
         error: (err) => {
           this.submitting.set(false);

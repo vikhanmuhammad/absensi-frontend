@@ -85,7 +85,7 @@ export class ProjectListComponent implements OnInit {
     const value = this.form.getRawValue();
 
     this.projectService
-      .create({ ...value, deskripsi: value.deskripsi || undefined })
+      .create({ ...value, deskripsi: value.deskripsi || undefined, spvProjectEmployeeId: Number(value.spvProjectEmployeeId) })
       .subscribe({
         next: () => {
           this.submitting.set(false);

@@ -5,16 +5,16 @@ export type SatuanUpah = 'PER_BULAN' | 'PER_JAM';
 export type JenisKelamin = 'L' | 'P';
 
 export interface Division {
-  id: string;
+  id: number;
   namaDivisi: string;
-  supervisorEmployeeId: string | null;
+  supervisorEmployeeId: number | null;
   supervisor?: Employee | null;
   _count?: { employees: number };
 }
 
 export interface Employee {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   nik: string;
   namaLengkap: string;
   email: string;
@@ -25,7 +25,7 @@ export interface Employee {
   statusPernikahan: string;
   fotoUrl: string | null;
   jabatan: string;
-  divisiId: string;
+  divisiId: number;
   divisi?: Division;
   statusKaryawan: StatusKaryawan;
   tanggalMulaiKerja: string;
@@ -41,15 +41,15 @@ export interface Employee {
 export type ProjectStatus = 'AKTIF' | 'SELESAI' | 'DIBATALKAN';
 
 export interface Project {
-  id: string;
+  id: number;
   namaProjek: string;
   tanggalMulai: string;
   tanggalBerakhir: string;
   deskripsi: string | null;
-  spvProjectEmployeeId: string;
+  spvProjectEmployeeId: number;
   spvProject?: Employee;
   status: ProjectStatus;
-  createdByUserId: string;
+  createdByUserId: number;
   _count?: { assignments: number };
   assignments?: ProjectAssignment[];
   manpowerRequests?: ManpowerRequest[];
@@ -59,32 +59,32 @@ export type ManpowerMode = 'SPESIFIK' | 'HEADCOUNT';
 export type ManpowerStatus = 'MENUNGGU' | 'DISETUJUI' | 'DITOLAK';
 
 export interface ManpowerRequest {
-  id: string;
-  projectId: string;
+  id: number;
+  projectId: number;
   project?: Project;
-  divisiAsalId: string;
+  divisiAsalId: number;
   divisiAsal?: Division;
   mode: ManpowerMode;
-  employeeId: string | null;
+  employeeId: number | null;
   employee?: Employee | null;
   jumlahDiminta: number | null;
   kriteria: string | null;
   tanggalMulaiPenugasan: string;
   tanggalAkhirPenugasan: string;
   status: ManpowerStatus;
-  approvedByUserId: string | null;
+  approvedByUserId: number | null;
   approvedAt: string | null;
 }
 
 export type AssignmentStatus = 'AKTIF' | 'SELESAI' | 'DIBATALKAN';
 
 export interface ProjectAssignment {
-  id: string;
-  employeeId: string;
+  id: number;
+  employeeId: number;
   employee?: Employee;
-  projectId: string;
+  projectId: number;
   project?: Project;
-  manpowerRequestId: string | null;
+  manpowerRequestId: number | null;
   tanggalMulai: string;
   tanggalBerakhir: string;
   status: AssignmentStatus;
@@ -94,8 +94,8 @@ export type LokasiKerja = 'KANTOR' | 'LAINNYA';
 export type StatusKehadiran = 'TEPAT_WAKTU' | 'TERLAMBAT' | 'ALFA' | 'PULANG_CEPAT';
 
 export interface Attendance {
-  id: string;
-  employeeId: string;
+  id: number;
+  employeeId: number;
   tanggal: string;
   jamMasuk: string | null;
   jamKeluar: string | null;
@@ -105,17 +105,17 @@ export interface Attendance {
   latitude?: string | null;
   longitude?: string | null;
   statusKehadiran: StatusKehadiran;
-  inputByUserId: string | null;
+  inputByUserId: number | null;
   deskripsiInputMassal: string | null;
-  employee?: { namaLengkap: string; divisiId: string; divisi: { namaDivisi: string } };
+  employee?: { namaLengkap: string; divisiId: number; divisi: { namaDivisi: string } };
 }
 
 export type JenisCuti = 'IZIN' | 'CUTI_TAHUNAN' | 'SAKIT' | 'MELAHIRKAN';
 export type LeaveStatus = 'MENUNGGU' | 'DISETUJUI' | 'DITOLAK';
 
 export interface LeaveRequest {
-  id: string;
-  employeeId: string;
+  id: number;
+  employeeId: number;
   employee?: Employee;
   jenisCuti: JenisCuti;
   tanggalMulai: string;
@@ -123,7 +123,7 @@ export interface LeaveRequest {
   alasan: string;
   dokumenPendukungUrl: string | null;
   status: LeaveStatus;
-  approvedByUserId: string | null;
+  approvedByUserId: number | null;
   approvedAt: string | null;
 }
 
@@ -131,30 +131,30 @@ export type OvertimeJenis = 'INDIVIDUAL' | 'MASSAL';
 export type OvertimeStatus = 'DIAJUKAN' | 'DISETUJUI' | 'DITOLAK' | 'DICATAT_OTOMATIS';
 
 export interface OvertimeRequest {
-  id: string;
-  employeeId: string | null;
+  id: number;
+  employeeId: number | null;
   jenis: OvertimeJenis;
   tanggal: string;
   deskripsiAlasan: string;
   status: OvertimeStatus;
-  inputByUserId: string | null;
+  inputByUserId: number | null;
 }
 
 export type NotifJenis = 'PENGAJUAN' | 'STATUS_APPROVAL' | 'SISTEM';
 
 export interface AppNotification {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   judul: string;
   pesan: string;
   jenis: NotifJenis;
-  referensiId: string | null;
+  referensiId: number | null;
   sudahDibaca: boolean;
   createdAt: string;
 }
 
 export interface UserAccount {
-  id: string;
+  id: number;
   username: string;
   role: Role;
   superAdminType: 'DIREKTUR' | 'IT_MAINTENANCE' | null;
@@ -172,7 +172,7 @@ export interface DashboardSummary {
 }
 
 export interface AttendanceReportRow {
-  divisiId: string;
+  divisiId: number;
   namaDivisi: string;
   hadir: number;
   terlambat: number;

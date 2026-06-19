@@ -53,8 +53,8 @@ export class AttendanceReportComponent implements OnInit {
       .attendanceReport({
         startDate: value.startDate || undefined,
         endDate: value.endDate || undefined,
-        divisiId: value.divisiId || undefined,
-        projectId: value.projectId || undefined,
+        divisiId: value.divisiId ? Number(value.divisiId) : undefined,
+        projectId: value.projectId ? Number(value.projectId) : undefined,
       })
       .subscribe({
         next: (data) => {

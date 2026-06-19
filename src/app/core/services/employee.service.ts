@@ -7,7 +7,7 @@ import { Employee, StatusKaryawan } from '../models/entities';
 
 export interface EmployeeFilter {
   search?: string;
-  divisiId?: string;
+  divisiId?: number;
   statusKaryawan?: StatusKaryawan;
 }
 
@@ -17,7 +17,7 @@ export class EmployeeService {
   private base = `${environment.apiUrl}/employees`;
 
   list(filter: EmployeeFilter = {}) {
-    const params: Record<string, string> = {};
+    const params: Record<string, string | number> = {};
     if (filter.search) params['search'] = filter.search;
     if (filter.divisiId) params['divisiId'] = filter.divisiId;
     if (filter.statusKaryawan) params['statusKaryawan'] = filter.statusKaryawan;
@@ -27,7 +27,7 @@ export class EmployeeService {
       .pipe(map((res) => res.data));
   }
 
-  getById(id: string) {
+  getById(id: number) {
     return this.http
       .get<ApiEnvelope<Employee>>(`${this.base}/${id}`, { withCredentials: true })
       .pipe(map((res) => res.data));
@@ -39,7 +39,7 @@ export class EmployeeService {
       .pipe(map((res) => res.data));
   }
 
-  update(id: string, data: Partial<Employee>) {
+  update(id: number, data: Partial<Employee>) {
     return this.http
       .patch<ApiEnvelope<Employee>>(`${this.base}/${id}`, data, { withCredentials: true })
       .pipe(map((res) => res.data));

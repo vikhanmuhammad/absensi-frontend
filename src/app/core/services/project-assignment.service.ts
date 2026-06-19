@@ -7,8 +7,8 @@ import { ProjectAssignment } from '../models/entities';
 
 export interface ProjectAssignmentFilter {
   search?: string;
-  projectId?: string;
-  divisiId?: string;
+  projectId?: number;
+  divisiId?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +17,7 @@ export class ProjectAssignmentService {
   private base = `${environment.apiUrl}/project-assignments`;
 
   history(filter: ProjectAssignmentFilter = {}) {
-    const params: Record<string, string> = {};
+    const params: Record<string, string | number> = {};
     if (filter.search) params['search'] = filter.search;
     if (filter.projectId) params['projectId'] = filter.projectId;
     if (filter.divisiId) params['divisiId'] = filter.divisiId;

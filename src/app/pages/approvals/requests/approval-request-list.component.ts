@@ -30,7 +30,7 @@ export class ApprovalRequestListComponent implements OnInit {
   processedJustNow = signal<LeaveRequest[]>([]);
   loading = signal(true);
   errorMessage = signal('');
-  actingId = signal<string | null>(null);
+  actingId = signal<number | null>(null);
 
   canApprove = computed(() => {
     const user = this.auth.currentUser();

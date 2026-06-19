@@ -39,7 +39,7 @@
               >
                 <option value="" disabled selected>Pilih karyawan...</option>
                 @for (emp of candidatesFor(item.divisiAsalId); track emp.id) {
-                  <option [value]="emp.id">{{ emp.namaLengkap }}</option>
+                  <option [ngValue]="emp.id">{{ emp.namaLengkap }}</option>
                 }
               </select>
             }

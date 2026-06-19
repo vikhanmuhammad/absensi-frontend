@@ -10,7 +10,7 @@ export interface CreateProjectInput {
   tanggalMulai: string;
   tanggalBerakhir: string;
   deskripsi?: string;
-  spvProjectEmployeeId: string;
+  spvProjectEmployeeId: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -22,7 +22,7 @@ export class ProjectService {
     return this.http.get<ApiEnvelope<Project[]>>(this.base, { withCredentials: true }).pipe(map((res) => res.data));
   }
 
-  getById(id: string) {
+  getById(id: number) {
     return this.http
       .get<ApiEnvelope<Project>>(`${this.base}/${id}`, { withCredentials: true })
       .pipe(map((res) => res.data));

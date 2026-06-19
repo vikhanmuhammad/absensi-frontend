@@ -18,7 +18,7 @@ export class AccountManagementComponent implements OnInit {
 
   users = signal<UserAccount[]>([]);
   loading = signal(true);
-  actingId = signal<string | null>(null);
+  actingId = signal<number | null>(null);
 
   ngOnInit() {
     this.load();

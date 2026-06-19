@@ -59,10 +59,10 @@ export class EmployeeDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
 
-    this.load(id);
+    this.load(Number(id));
   }
 
-  load(id: string) {
+  load(id: number) {
     this.loading.set(true);
     this.employeeService.getById(id).subscribe({
       next: (data) => {

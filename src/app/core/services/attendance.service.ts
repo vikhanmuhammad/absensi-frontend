@@ -14,7 +14,7 @@ export interface ClockInInput {
 }
 
 export interface BulkAttendanceInput {
-  employeeId: string;
+  employeeId: number;
   tanggal: string;
   jamMasuk: string;
   jamKeluar?: string;
@@ -32,8 +32,8 @@ export class AttendanceService {
       .pipe(map((res) => res.data));
   }
 
-  history(filter: { employeeId?: string; divisiId?: string; startDate?: string; endDate?: string } = {}) {
-    const params: Record<string, string> = {};
+  history(filter: { employeeId?: number; divisiId?: number; startDate?: string; endDate?: string } = {}) {
+    const params: Record<string, string | number> = {};
     if (filter.employeeId) params['employeeId'] = filter.employeeId;
     if (filter.divisiId) params['divisiId'] = filter.divisiId;
     if (filter.startDate) params['startDate'] = filter.startDate;

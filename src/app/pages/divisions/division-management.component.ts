@@ -22,7 +22,7 @@ export class DivisionManagementComponent implements OnInit {
   employees = signal<Employee[]>([]);
   loading = signal(true);
   showForm = signal(false);
-  editingId = signal<string | null>(null);
+  editingId = signal<number | null>(null);
   submitting = signal(false);
   errorMessage = signal('');
 
@@ -55,7 +55,7 @@ export class DivisionManagementComponent implements OnInit {
 
   openEdit(item: Division) {
     this.editingId.set(item.id);
-    this.form.reset({ namaDivisi: item.namaDivisi, supervisorEmployeeId: item.supervisorEmployeeId ?? '' });
+    this.form.reset({ namaDivisi: item.namaDivisi, supervisorEmployeeId: item.supervisorEmployeeId ? String(item.supervisorEmployeeId) : '' });
     this.showForm.set(true);
   }
 
@@ -72,7 +72,10 @@ export class DivisionManagementComponent implements OnInit {
     this.submitting.set(true);
     this.errorMessage.set('');
     const value = this.form.getRawValue();
-    const payload = { namaDivisi: value.namaDivisi, supervisorEmployeeId: value.supervisorEmployeeId || undefined };
+    const payload = {
+      namaDivisi: value.namaDivisi,
+      supervisorEmployeeId: value.supervisorEmployeeId ? Number(value.supervisorEmployeeId) : undefined,
+    };
 
     const editingId = this.editingId();
     const request = editingId ? this.divisionService.update(editingId, payload) : this.divisionService.create(payload);

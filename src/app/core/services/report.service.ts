@@ -8,8 +8,8 @@ import { AttendanceReport, DashboardSummary } from '../models/entities';
 export interface AttendanceReportFilter {
   startDate?: string;
   endDate?: string;
-  divisiId?: string;
-  projectId?: string;
+  divisiId?: number;
+  projectId?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -24,7 +24,7 @@ export class ReportService {
   }
 
   attendanceReport(filter: AttendanceReportFilter = {}) {
-    const params: Record<string, string> = {};
+    const params: Record<string, string | number> = {};
     if (filter.startDate) params['startDate'] = filter.startDate;
     if (filter.endDate) params['endDate'] = filter.endDate;
     if (filter.divisiId) params['divisiId'] = filter.divisiId;

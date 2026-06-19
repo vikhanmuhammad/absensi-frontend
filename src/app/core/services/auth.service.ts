@@ -7,14 +7,14 @@ import { environment } from '../../../environments/environment';
 export type Role = 'SUPER_ADMIN' | 'HRD' | 'SUPERVISOR' | 'KARYAWAN';
 
 export interface CurrentUser {
-  id: string;
+  id: number;
   username: string;
   role: Role;
   superAdminType: 'DIREKTUR' | 'IT_MAINTENANCE' | null;
   employee: {
-    id: string;
+    id: number;
     namaLengkap: string;
-    divisiId: string;
+    divisiId: number;
   } | null;
 }
 

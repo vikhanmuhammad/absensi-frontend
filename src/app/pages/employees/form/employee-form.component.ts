@@ -38,7 +38,7 @@ export class EmployeeFormComponent implements OnInit {
     this.loadDivisions();
 
     if (this.isEditMode && this.employeeId) {
-      this.loadEmployee(this.employeeId);
+      this.loadEmployee(Number(this.employeeId));
     }
   }
 
@@ -83,7 +83,7 @@ export class EmployeeFormComponent implements OnInit {
     });
   }
 
-  private loadEmployee(id: string): void {
+  private loadEmployee(id: number): void {
     this.loading.set(true);
     this.employeeService.getById(id).subscribe({
       next: (emp) => {
@@ -114,7 +114,7 @@ export class EmployeeFormComponent implements OnInit {
     this.error.set(null);
 
     if (this.isEditMode && this.employeeId) {
-      this.employeeService.update(this.employeeId, this.form.value).subscribe({
+      this.employeeService.update(Number(this.employeeId), this.form.value).subscribe({
         next: () => {
           this.loading.set(false);
           this.router.navigate(['/karyawan', this.employeeId]);

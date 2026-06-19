@@ -26,9 +26,9 @@ export class ManpowerApprovalListComponent implements OnInit {
   processed = signal<ManpowerRequest[]>([]);
   loading = signal(true);
   errorMessage = signal('');
-  actingId = signal<string | null>(null);
-  candidatesByDivisi = new Map<string, Employee[]>();
-  selectedEmployee = new Map<string, string>();
+  actingId = signal<number | null>(null);
+  candidatesByDivisi = new Map<number, Employee[]>();
+  selectedEmployee = new Map<number, number>();
 
   ngOnInit() {
     this.load();
@@ -56,7 +56,7 @@ export class ManpowerApprovalListComponent implements OnInit {
     });
   }
 
-  candidatesFor(divisiId: string): Employee[] {
+  candidatesFor(divisiId: number): Employee[] {
     return this.candidatesByDivisi.get(divisiId) ?? [];
   }
 

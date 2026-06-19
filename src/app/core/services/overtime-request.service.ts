@@ -22,7 +22,7 @@ export class OvertimeRequestService {
       .pipe(map((res) => res.data));
   }
 
-  bulk(input: { employeeIds: string[]; tanggal: string; deskripsiAlasan: string }) {
+  bulk(input: { employeeIds: number[]; tanggal: string; deskripsiAlasan: string }) {
     return this.http
       .post<ApiEnvelope<OvertimeRequest>>(`${this.base}/bulk`, input, { withCredentials: true })
       .pipe(map((res) => res.data));

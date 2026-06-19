@@ -24,7 +24,7 @@ export class BulkOvertimeComponent implements OnInit {
   private authService = inject(AuthService);
 
   employees = signal<Employee[]>([]);
-  selectedIds = signal<Set<string>>(new Set());
+  selectedIds = signal<Set<number>>(new Set());
   loading = signal(false);
   error = signal<string | null>(null);
   success = signal<string | null>(null);
@@ -42,10 +42,10 @@ export class BulkOvertimeComponent implements OnInit {
 
   private loadEmployees(): void {
     const user = this.authService.currentUser();
-    const filter: Record<string, string> = {};
+    const filter: { divisiId?: number } = {};
 
     if (user?.role === 'SUPERVISOR' && user.employee?.divisiId) {
-      filter['divisiId'] = user.employee.divisiId;
+      filter.divisiId = user.employee.divisiId;
     }
 
     this.employeeService.list(filter).subscribe({
@@ -53,7 +53,7 @@ export class BulkOvertimeComponent implements OnInit {
     });
   }
 
-  toggleSelect(id: string): void {
+  toggleSelect(id: number): void {
     const s = new Set(this.selectedIds());
     if (s.has(id)) s.delete(id);
     else s.add(id);
@@ -69,7 +69,7 @@ export class BulkOvertimeComponent implements OnInit {
     }
   }
 
-  isSelected(id: string): boolean {
+  isSelected(id: number): boolean {
     return this.selectedIds().has(id);
   }
 

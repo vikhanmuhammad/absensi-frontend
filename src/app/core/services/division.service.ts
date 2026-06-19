@@ -14,19 +14,19 @@ export class DivisionService {
     return this.http.get<ApiEnvelope<Division[]>>(this.base, { withCredentials: true }).pipe(map((res) => res.data));
   }
 
-  getById(id: string) {
+  getById(id: number) {
     return this.http
       .get<ApiEnvelope<Division>>(`${this.base}/${id}`, { withCredentials: true })
       .pipe(map((res) => res.data));
   }
 
-  create(data: { namaDivisi: string; supervisorEmployeeId?: string }) {
+  create(data: { namaDivisi: string; supervisorEmployeeId?: number }) {
     return this.http
       .post<ApiEnvelope<Division>>(this.base, data, { withCredentials: true })
       .pipe(map((res) => res.data));
   }
 
-  update(id: string, data: { namaDivisi?: string; supervisorEmployeeId?: string }) {
+  update(id: number, data: { namaDivisi?: string; supervisorEmployeeId?: number }) {
     return this.http
       .patch<ApiEnvelope<Division>>(`${this.base}/${id}`, data, { withCredentials: true })
       .pipe(map((res) => res.data));

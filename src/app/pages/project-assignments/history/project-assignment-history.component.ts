@@ -44,8 +44,8 @@ export class ProjectAssignmentHistoryComponent implements OnInit {
         switchMap((value) =>
           this.assignmentService.history({
             search: value.search || undefined,
-            projectId: value.projectId || undefined,
-            divisiId: value.divisiId || undefined,
+            projectId: value.projectId ? Number(value.projectId) : undefined,
+            divisiId: value.divisiId ? Number(value.divisiId) : undefined,
           }),
         ),
       )

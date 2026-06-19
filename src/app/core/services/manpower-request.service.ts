@@ -6,10 +6,10 @@ import { ApiEnvelope } from '../models/api-envelope';
 import { ManpowerMode, ManpowerRequest } from '../models/entities';
 
 export interface CreateManpowerRequestInput {
-  projectId: string;
-  divisiAsalId: string;
+  projectId: number;
+  divisiAsalId: number;
   mode: ManpowerMode;
-  employeeId?: string;
+  employeeId?: number;
   jumlahDiminta?: number;
   kriteria?: string;
   tanggalMulaiPenugasan: string;
@@ -21,8 +21,8 @@ export class ManpowerRequestService {
   private http = inject(HttpClient);
   private base = `${environment.apiUrl}/manpower-requests`;
 
-  listPending(divisiId?: string) {
-    const params: Record<string, string> = {};
+  listPending(divisiId?: number) {
+    const params: Record<string, string | number> = {};
     if (divisiId) params['divisiId'] = divisiId;
 
     return this.http
@@ -36,13 +36,13 @@ export class ManpowerRequestService {
       .pipe(map((res) => res.data));
   }
 
-  approve(id: string, employeeId?: string) {
+  approve(id: number, employeeId?: number) {
     return this.http
       .patch<ApiEnvelope<ManpowerRequest>>(`${this.base}/${id}/approve`, { employeeId }, { withCredentials: true })
       .pipe(map((res) => res.data));
   }
 
-  reject(id: string, catatan?: string) {
+  reject(id: number, catatan?: string) {
     return this.http
       .patch<ApiEnvelope<ManpowerRequest>>(`${this.base}/${id}/reject`, { catatan }, { withCredentials: true })
       .pipe(map((res) => res.data));

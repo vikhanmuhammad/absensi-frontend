@@ -19,7 +19,7 @@ export class NotificationService {
     );
   }
 
-  markAsRead(id: string) {
+  markAsRead(id: number) {
     return this.http
       .patch(`${this.base}/${id}/read`, {}, { withCredentials: true })
       .pipe(tap(() => this.unreadCount.update((n) => Math.max(0, n - 1))));

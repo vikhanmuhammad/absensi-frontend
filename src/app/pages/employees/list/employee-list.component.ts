@@ -48,7 +48,7 @@ export class EmployeeListComponent implements OnInit {
         switchMap((value) =>
           this.employeeService.list({
             search: value.search || undefined,
-            divisiId: value.divisiId || undefined,
+            divisiId: value.divisiId ? Number(value.divisiId) : undefined,
             statusKaryawan: (value.statusKaryawan as Employee['statusKaryawan']) || undefined,
           }),
         ),

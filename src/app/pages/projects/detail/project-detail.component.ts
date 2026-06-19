@@ -52,7 +52,7 @@ export class ProjectDetailComponent implements OnInit {
     if (!id) return;
     this.projectId = id;
 
-    this.projectService.getById(id).subscribe({
+    this.projectService.getById(Number(id)).subscribe({
       next: (data) => {
         this.project.set(data);
         this.loading.set(false);

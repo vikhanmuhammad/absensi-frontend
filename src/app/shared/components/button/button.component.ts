@@ -14,5 +14,5 @@ export class ButtonComponent {
   @Input() disabled = false;
   @Input() fullWidth = false;
   /** Jika diisi, render sebagai <a routerLink> (navigasi) bukan <button> — untuk tombol yang berfungsi sebagai link. */
-  @Input() routerLink?: string | string[];
+  @Input() routerLink?: string | unknown[];
 }

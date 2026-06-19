@@ -14,7 +14,7 @@ export class UserService {
     return this.http.get<ApiEnvelope<UserAccount[]>>(this.base, { withCredentials: true }).pipe(map((res) => res.data));
   }
 
-  setActive(id: string, statusAktif: boolean) {
+  setActive(id: number, statusAktif: boolean) {
     return this.http
       .patch<ApiEnvelope<UserAccount>>(`${this.base}/${id}`, { statusAktif }, { withCredentials: true })
       .pipe(map((res) => res.data));
