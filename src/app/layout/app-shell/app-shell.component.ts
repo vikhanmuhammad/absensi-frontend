@@ -67,6 +67,7 @@ const NAV_GROUPS: NavGroup[] = [
     roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'],
     children: [
       { path: '/karyawan', label: 'Data Karyawan', icon: 'users', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+      { path: '/promosi', label: 'Promosi & Kenaikan', icon: 'trending-up', roles: ['SUPER_ADMIN', 'HRD'] },
       { path: '/akun', label: 'Manajemen Akun', icon: 'id-card', roles: ['SUPER_ADMIN', 'HRD'] },
       { path: '/divisi', label: 'Manajemen Divisi', icon: 'building', roles: ['SUPER_ADMIN', 'HRD'] },
     ],

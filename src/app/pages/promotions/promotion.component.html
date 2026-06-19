@@ -1,0 +1,192 @@
+<div class="page-header">
+  <div>
+    <h1>Promosi &amp; Kenaikan</h1>
+    <p>Kelola kenaikan status karyawan (Harian → Kontrak, Kontrak → Tetap) dan perubahan data gaji</p>
+  </div>
+</div>
+
+<app-card>
+  <h3>Buat Promosi / Perubahan Gaji</h3>
+
+  <div class="tabs">
+    @for (opt of jenisOptions; track opt.value) {
+      <button type="button" class="tab-btn" [class.active]="jenisPromosi() === opt.value" (click)="setJenis(opt.value)">
+        {{ opt.label }}
+      </button>
+    }
+  </div>
+
+  <div class="mode-row">
+    <label class="mode-option">
+      <input type="radio" name="mode" [checked]="mode() === 'perorangan'" (change)="setMode('perorangan')" />
+      Perorangan
+    </label>
+    <label class="mode-option">
+      <input type="radio" name="mode" [checked]="mode() === 'massal'" (change)="setMode('massal')" />
+      Massal
+    </label>
+  </div>
+
+  @if (error()) {
+    <p class="form-error">{{ error() }}</p>
+  }
+  @if (success()) {
+    <p class="form-success">{{ success() }}</p>
+  }
+  @if (skippedMessages().length > 0) {
+    <ul class="skip-list">
+      @for (msg of skippedMessages(); track msg) {
+        <li>{{ msg }}</li>
+      }
+    </ul>
+  }
+
+  <h4 class="section-title">Pilih Karyawan</h4>
+  @if (loadingEmployees()) {
+    <p class="muted">Memuat data karyawan...</p>
+  } @else if (eligibleEmployees().length === 0) {
+    <p class="muted">Tidak ada karyawan dengan status yang sesuai untuk jenis ini.</p>
+  } @else if (mode() === 'perorangan') {
+    <div class="searchable-dropdown" (focusout)="onDropdownBlur($event)" tabindex="-1">
+      <input
+        type="text"
+        class="search-input"
+        [placeholder]="selectedIds().size > 0 ? getSelectedEmployees()[0]?.namaLengkap : 'Cari karyawan berdasarkan nama, NIK, divisi, atau jabatan...'"
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+        (focus)="dropdownOpen.set(true)"
+      />
+      @if (dropdownOpen() && filteredEmployees().length > 0) {
+        <div class="dropdown-list">
+          @for (emp of filteredEmployees(); track emp.id) {
+            <div class="dropdown-item" [class.selected]="isSelected(emp.id)" (mousedown)="pickSingle(emp.id)">
+              <span class="item-name">{{ emp.namaLengkap }}</span>
+              <span class="item-meta">{{ emp.divisi?.namaDivisi }} · {{ emp.jabatan }}
+                @if (showKontrakKe()) { · Kontrak ke-{{ emp.kontrakKe }} }
+              </span>
+            </div>
+          }
+        </div>
+      }
+      @if (dropdownOpen() && filteredEmployees().length === 0 && searchTerm()) {
+        <div class="dropdown-list">
+          <div class="dropdown-empty">Tidak ditemukan karyawan yang cocok.</div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="searchable-dropdown" (focusout)="onDropdownBlur($event)" tabindex="-1">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Cari karyawan untuk ditambahkan..."
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+        (focus)="dropdownOpen.set(true)"
+      />
+      @if (dropdownOpen() && filteredAvailable().length > 0) {
+        <div class="dropdown-list">
+          @for (emp of filteredAvailable(); track emp.id) {
+            <div class="dropdown-item" [class.selected]="isSelected(emp.id)" (mousedown)="pickMassal(emp.id)">
+              <span class="item-name">{{ emp.namaLengkap }}</span>
+              <span class="item-meta">{{ emp.divisi?.namaDivisi }} · {{ emp.jabatan }}</span>
+            </div>
+          }
+        </div>
+      }
+      @if (dropdownOpen() && filteredAvailable().length === 0 && searchTerm()) {
+        <div class="dropdown-list">
+          <div class="dropdown-empty">Tidak ditemukan karyawan yang cocok (atau sudah dipilih semua).</div>
+        </div>
+      }
+    </div>
+    @if (selectedIds().size > 0) {
+      <div class="selected-chips">
+        @for (emp of getSelectedEmployees(); track emp.id) {
+          <span class="chip">
+            {{ emp.namaLengkap }}
+            <button type="button" class="chip-remove" (click)="toggleSelect(emp.id)">&times;</button>
+          </span>
+        }
+        <button type="button" class="clear-all-link" (click)="clearAllSelection()">Hapus semua</button>
+      </div>
+      <p class="muted selected-count">{{ selectedIds().size }} karyawan dipilih</p>
+    }
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="promotion-form">
+    <h4 class="section-title">Data Gaji Baru</h4>
+    <div class="form-grid cols-2">
+      <div class="form-group">
+        <label for="nominalUpahBaru">Nominal Upah *</label>
+        <input id="nominalUpahBaru" type="number" formControlName="nominalUpahBaru" placeholder="0" />
+      </div>
+      <div class="form-group">
+        <label for="satuanUpahBaru">Satuan Upah *</label>
+        <select id="satuanUpahBaru" formControlName="satuanUpahBaru">
+          <option value="PER_BULAN">Per Bulan</option>
+          <option value="PER_JAM">Per Jam</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="nominalUpahLemburBaru">Nominal Upah Lembur *</label>
+        <input id="nominalUpahLemburBaru" type="number" formControlName="nominalUpahLemburBaru" placeholder="0" />
+      </div>
+      <div class="form-group">
+        <label for="pengaliLemburBaru">Pengali Lembur</label>
+        <input id="pengaliLemburBaru" type="number" formControlName="pengaliLemburBaru" placeholder="1.5" step="0.1" />
+      </div>
+    </div>
+
+    <h4 class="section-title">Periode Berlaku</h4>
+    <div class="form-grid cols-2">
+      <div class="form-group">
+        <label for="tanggalMulai">Tanggal Mulai *</label>
+        <input id="tanggalMulai" type="date" formControlName="tanggalMulai" />
+        <span class="hint-text">Jika di masa depan, perubahan baru berlaku otomatis pada tanggal tersebut.</span>
+      </div>
+      @if (showTanggalSelesai()) {
+        <div class="form-group">
+          <label for="tanggalSelesai">Tanggal Selesai Kontrak{{ tanggalSelesaiRequired() ? ' *' : ' (opsional)' }}</label>
+          <input id="tanggalSelesai" type="date" formControlName="tanggalSelesai" />
+        </div>
+      }
+    </div>
+
+    <div class="form-actions">
+      <app-button variant="primary" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Memproses...' : 'Proses Promosi/Perubahan Gaji' }}
+      </app-button>
+    </div>
+  </form>
+</app-card>
+
+<app-card>
+  <h3>Riwayat Promosi</h3>
+  @if (loadingHistory()) {
+    <p class="muted">Memuat riwayat...</p>
+  } @else if (history().length === 0) {
+    <p class="muted">Belum ada riwayat promosi.</p>
+  } @else {
+    <table>
+      <tr>
+        <th>Karyawan</th>
+        <th>Jenis</th>
+        <th>Gaji Baru</th>
+        <th>Kontrak Ke</th>
+        <th>Tanggal Mulai</th>
+        <th>Status</th>
+      </tr>
+      @for (item of history(); track item.id) {
+        <tr>
+          <td>{{ item.employee?.namaLengkap }}</td>
+          <td>{{ jenisLabel(item.jenisPromosi) }}</td>
+          <td>{{ item.nominalUpahBaru | number }} / {{ item.satuanUpahBaru === 'PER_BULAN' ? 'bulan' : 'jam' }}</td>
+          <td>{{ item.kontrakKeBaru ?? '—' }}</td>
+          <td>{{ item.tanggalMulai | date: 'd MMM y' }}</td>
+          <td><app-badge [variant]="statusVariant(item.status)">{{ statusLabel(item.status) }}</app-badge></td>
+        </tr>
+      }
+    </table>
+  }
+</app-card>

@@ -31,7 +31,8 @@ export type IconName =
   | 'search'
   | 'plus'
   | 'trash'
-  | 'save';
+  | 'save'
+  | 'trending-up';
 
 // Pemetaan nama ikon abstrak -> class Remixicon (https://remixicon.com), supaya pemakaian
 // <app-icon name="..."> di seluruh aplikasi tidak perlu berubah jika suatu saat ganti icon set.
@@ -67,6 +68,7 @@ const ICON_MAP: Record<IconName, string> = {
   plus: 'ri-add-line',
   trash: 'ri-delete-bin-line',
   save: 'ri-save-line',
+  'trending-up': 'ri-line-chart-line',
 };
 
 @Component({

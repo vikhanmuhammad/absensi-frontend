@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { EmployeeService } from '../../../core/services/employee.service';
@@ -11,7 +11,7 @@ import { Division } from '../../../core/models/entities';
 @Component({
   selector: 'app-employee-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CardComponent, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CardComponent, ButtonComponent],
   templateUrl: './employee-form.component.html',
   styleUrl: './employee-form.component.scss',
 })
@@ -49,20 +49,10 @@ export class EmployeeFormComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         noHp: ['', Validators.required],
         alamat: ['', Validators.required],
-        jabatan: ['', Validators.required],
-        statusAktif: [true],
         nik: [''],
         tanggalLahir: [''],
         jenisKelamin: ['L'],
         statusPernikahan: ['BELUM MENIKAH'],
-        divisiId: ['', Validators.required],
-        statusKaryawan: ['TETAP', Validators.required],
-        tanggalMulaiKerja: [''],
-        tanggalAkhirKontrak: [''],
-        nominalUpah: [0, [Validators.required, Validators.min(0)]],
-        satuanUpah: ['PER_BULAN', Validators.required],
-        nominalUpahLembur: [0, [Validators.required, Validators.min(0)]],
-        pengaliLembur: [''],
       });
     } else {
       this.form = this.fb.group({
@@ -104,20 +94,10 @@ export class EmployeeFormComponent implements OnInit {
           email: emp.email,
           noHp: emp.noHp,
           alamat: emp.alamat,
-          jabatan: emp.jabatan,
-          statusAktif: emp.statusAktif,
           nik: emp.nik,
           tanggalLahir: emp.tanggalLahir ? emp.tanggalLahir.split('T')[0] : '',
           jenisKelamin: emp.jenisKelamin,
           statusPernikahan: emp.statusPernikahan,
-          divisiId: emp.divisiId,
-          statusKaryawan: emp.statusKaryawan,
-          tanggalMulaiKerja: emp.tanggalMulaiKerja ? emp.tanggalMulaiKerja.split('T')[0] : '',
-          tanggalAkhirKontrak: emp.tanggalAkhirKontrak ? emp.tanggalAkhirKontrak.split('T')[0] : '',
-          nominalUpah: emp.nominalUpah,
-          satuanUpah: emp.satuanUpah,
-          nominalUpahLembur: emp.nominalUpahLembur,
-          pengaliLembur: emp.pengaliLembur ?? '',
         });
         this.loading.set(false);
       },
@@ -138,15 +118,7 @@ export class EmployeeFormComponent implements OnInit {
     this.error.set(null);
 
     if (this.isEditMode && this.employeeId) {
-      const raw = this.form.value;
-      const payload = {
-        ...raw,
-        nominalUpah: Number(raw.nominalUpah),
-        nominalUpahLembur: Number(raw.nominalUpahLembur),
-        pengaliLembur: raw.pengaliLembur ? Number(raw.pengaliLembur) : null,
-        divisiId: Number(raw.divisiId),
-      };
-      this.employeeService.update(Number(this.employeeId), payload).subscribe({
+      this.employeeService.update(Number(this.employeeId), this.form.value).subscribe({
         next: () => {
           this.loading.set(false);
           this.router.navigate(['/karyawan', this.employeeId]);

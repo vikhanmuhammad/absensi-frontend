@@ -30,6 +30,7 @@ export interface Employee {
   statusKaryawan: StatusKaryawan;
   tanggalMulaiKerja: string;
   tanggalAkhirKontrak: string | null;
+  kontrakKe: number;
   nominalUpah: string;
   satuanUpah: SatuanUpah;
   nominalUpahLembur: string;
@@ -214,4 +215,27 @@ export interface AttendanceReport {
   perDivisi: AttendanceReportRow[];
   perEmployee: EmployeeAttendanceRow[];
   summary: AttendanceReportSummary;
+}
+
+export type JenisPromosi = 'HARIAN_KE_KONTRAK' | 'KONTRAK_KE_TETAP' | 'PERPANJANGAN_KONTRAK' | 'PERUBAHAN_GAJI';
+export type PromotionStatus = 'DIJADWALKAN' | 'AKTIF' | 'DIBATALKAN';
+
+export interface EmployeePromotion {
+  id: number;
+  employeeId: number;
+  employee?: Employee;
+  jenisPromosi: JenisPromosi;
+  statusBaru: StatusKaryawan;
+  nominalUpahBaru: string;
+  satuanUpahBaru: SatuanUpah;
+  nominalUpahLemburBaru: string;
+  pengaliLemburBaru: string | null;
+  kontrakKeBaru: number | null;
+  tanggalMulai: string;
+  tanggalSelesai: string | null;
+  status: PromotionStatus;
+  diprosesOlehUserId: number;
+  diprosesOleh?: { username: string };
+  createdAt: string;
+  appliedAt: string | null;
 }

@@ -107,6 +107,12 @@ export const routes: Routes = [
         data: { title: 'Edit Karyawan' },
       },
       {
+        path: 'promosi',
+        canActivate: [roleGuard(['SUPER_ADMIN', 'HRD'])],
+        loadComponent: () => import('./pages/promotions/promotion.component').then((m) => m.PromotionComponent),
+        data: { title: 'Promosi & Kenaikan' },
+      },
+      {
         path: 'akun',
         canActivate: [roleGuard(['SUPER_ADMIN', 'HRD'])],
         loadComponent: () =>
