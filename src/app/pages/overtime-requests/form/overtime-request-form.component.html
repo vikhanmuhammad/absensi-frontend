@@ -26,6 +26,9 @@
     @if (errorMessage()) {
       <p class="form-error">{{ errorMessage() }}</p>
     }
+    @if (dateWarning()) {
+      <p class="form-error">{{ dateWarning() }}</p>
+    }
     @if (successMessage()) {
       <p class="form-success">{{ successMessage() }}</p>
     }

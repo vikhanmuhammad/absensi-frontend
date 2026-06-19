@@ -17,6 +17,7 @@
     [class.btn-full]="fullWidth"
     [type]="type"
     [disabled]="disabled"
+    (click)="btnClick.emit()"
   >
     <ng-content></ng-content>
   </button>

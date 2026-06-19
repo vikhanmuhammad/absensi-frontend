@@ -18,11 +18,11 @@
     <div class="form-row">
       <div class="form-group">
         <label for="mulai">Tanggal Mulai</label>
-        <input type="date" id="mulai" formControlName="tanggalMulai" />
+        <input type="date" id="mulai" formControlName="tanggalMulai" [min]="minDate" />
       </div>
       <div class="form-group">
         <label for="selesai">Tanggal Selesai</label>
-        <input type="date" id="selesai" formControlName="tanggalSelesai" />
+        <input type="date" id="selesai" formControlName="tanggalSelesai" [min]="form.controls.tanggalMulai.value || minDate" />
       </div>
     </div>
     <div class="form-group">
@@ -39,6 +39,9 @@
 
     @if (errorMessage()) {
       <p class="form-error">{{ errorMessage() }}</p>
+    }
+    @if (dateWarning()) {
+      <p class="form-error">{{ dateWarning() }}</p>
     }
     @if (successMessage()) {
       <p class="form-success">{{ successMessage() }}</p>

@@ -38,7 +38,7 @@ const NAV_GROUPS: NavGroup[] = [
     children: [
       { path: '/absensi', label: 'Absensi Harian', icon: 'clock', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
       { path: '/absensi/riwayat', label: 'Riwayat Absensi', icon: 'calendar', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
-      { path: '/absensi/massal', label: 'Input Absensi Massal', icon: 'clipboard-edit', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
+      { path: '/absensi/massal', label: 'Input Absensi Massal', icon: 'clipboard-edit', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
     ],
   },
   {
@@ -81,12 +81,11 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: 'Laporan & Notifikasi',
+    label: 'Laporan',
     icon: 'bar-chart',
-    roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'],
+    roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'],
     children: [
       { path: '/laporan', label: 'Laporan Absensi', icon: 'bar-chart', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'] },
-      { path: '/notifikasi', label: 'Notifikasi', icon: 'bell', roles: ['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'] },
     ],
   },
   {
@@ -156,6 +155,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
     // Tutup sidebar mobile otomatis setiap kali pindah halaman.
     this.routerSub = this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
       this.mobileOpen.set(false);
+      this.hoverGroupLabel.set(null);
       this.syncOpenGroups();
     });
   }
@@ -165,12 +165,21 @@ export class AppShellComponent implements OnInit, OnDestroy {
   }
 
   navGroups = computed(() => {
-    const role = this.auth.currentUser()?.role;
+    const user = this.auth.currentUser();
+    const role = user?.role;
     if (!role) return [];
-    return NAV_GROUPS.filter((g) => g.roles.includes(role)).map((g) => ({
-      ...g,
-      children: g.children.filter((c) => c.roles.includes(role)),
-    }));
+    const isHarian = user?.employee?.statusKaryawan === 'HARIAN';
+    return NAV_GROUPS
+      .filter((g) => g.roles.includes(role))
+      .filter((g) => {
+        // Karyawan harian tidak boleh akses pengajuan cuti/lembur
+        if (isHarian && g.label === 'Pengajuan') return false;
+        return true;
+      })
+      .map((g) => ({
+        ...g,
+        children: g.children.filter((c) => c.roles.includes(role)),
+      }));
   });
 
   displayName = computed(

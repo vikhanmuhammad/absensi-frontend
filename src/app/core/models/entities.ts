@@ -178,9 +178,40 @@ export interface AttendanceReportRow {
   hadir: number;
   terlambat: number;
   alfa: number;
+  pulangCepat: number;
+}
+
+export interface EmployeeAttendanceRow {
+  employeeId: number;
+  divisiId: number;
+  nik: string;
+  namaLengkap: string;
+  namaDivisi: string;
+  jabatan: string;
+  statusKaryawan: string;
+  hadir: number;
+  terlambat: number;
+  alfa: number;
+  pulangCepat: number;
+  totalLembur: number;
+  nominalUpah: number;
+  satuanUpah: string;
+  nominalUpahLembur: number;
+  estimatedSalary: number;
+}
+
+export interface AttendanceReportSummary {
+  totalHadir: number;
+  totalTerlambat: number;
+  totalAlfa: number;
+  totalPulangCepat: number;
+  totalLembur: number;
+  totalEstimatedSalary: number;
 }
 
 export interface AttendanceReport {
   totalRecords: number;
   perDivisi: AttendanceReportRow[];
+  perEmployee: EmployeeAttendanceRow[];
+  summary: AttendanceReportSummary;
 }

@@ -15,6 +15,7 @@ export interface CurrentUser {
     id: number;
     namaLengkap: string;
     divisiId: number;
+    statusKaryawan: string;
   } | null;
 }
 

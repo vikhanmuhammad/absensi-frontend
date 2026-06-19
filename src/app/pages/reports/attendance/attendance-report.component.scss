@@ -1,7 +1,108 @@
 :host {
   display: block;
+  overflow: hidden;
 }
 
 .filter-row {
   align-items: center;
+}
+
+/* Expandable divisi table */
+.divisi-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  thead th {
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    background: var(--color-surface);
+    position: sticky;
+    top: 0;
+  }
+}
+
+.col-expand {
+  width: 36px;
+  text-align: center !important;
+}
+
+.divisi-row {
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--color-surface);
+  }
+
+  &.expanded {
+    background: #f0f0ff;
+    border-bottom-color: transparent;
+  }
+}
+
+.expand-icon {
+  display: inline-flex;
+  transition: transform 0.2s;
+  color: var(--color-text-muted);
+
+  &.rotated {
+    transform: rotate(90deg);
+  }
+}
+
+.expand-content {
+  > td {
+    padding: 0 12px 16px 48px;
+    background: #f8f8ff;
+  }
+}
+
+/* Employee sub-table inside expanded row */
+.emp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  thead th {
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-size: 12px;
+    background: #eee;
+    border-radius: 4px;
+  }
+}
+
+/* Table overflow */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.salary-cell {
+  font-weight: 700;
+  color: var(--color-success);
+  white-space: nowrap;
+}
+
+/* Grid overflow fix */
+:host ::ng-deep .grid-kpi {
+  overflow: hidden;
 }

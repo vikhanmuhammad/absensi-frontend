@@ -5,6 +5,7 @@ import { debounceTime, startWith, switchMap } from 'rxjs';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { EmployeeService } from '../../../core/services/employee.service';
 import { DivisionService } from '../../../core/services/division.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -13,7 +14,7 @@ import { Division, Employee } from '../../../core/models/entities';
 @Component({
   selector: 'app-employee-list',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CardComponent, BadgeComponent, ButtonComponent],
+  imports: [ReactiveFormsModule, RouterLink, CardComponent, BadgeComponent, ButtonComponent, IconComponent],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss',
 })

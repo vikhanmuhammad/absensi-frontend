@@ -51,9 +51,9 @@
             <app-badge [variant]="item.statusAktif ? 'success' : 'muted'">{{ item.statusAktif ? 'Aktif' : 'Nonaktif' }}</app-badge>
           </td>
           <td class="actions-cell">
-            <app-button variant="outline" [routerLink]="['/karyawan', item.id]">Lihat</app-button>
+            <app-button variant="outline" [routerLink]="['/karyawan', item.id]"><app-icon name="eye" [size]="16"></app-icon> Lihat</app-button>
             @if (canCreate) {
-              <app-button variant="outline" [routerLink]="['/karyawan', item.id, 'edit']">Edit</app-button>
+              <app-button variant="outline" [routerLink]="['/karyawan', item.id, 'edit']"><app-icon name="edit" [size]="16"></app-icon> Edit</app-button>
             }
           </td>
         </tr>

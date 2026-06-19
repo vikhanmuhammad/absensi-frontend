@@ -46,6 +46,14 @@
       <div class="kpi-value kpi-danger">{{ totalAlfa() }}</div>
       <div class="kpi-label">Total Alfa</div>
     </app-card>
+    <app-card>
+      <div class="kpi-value kpi-info">{{ totalLembur() }}</div>
+      <div class="kpi-label">Total Lembur</div>
+    </app-card>
+    <app-card>
+      <div class="kpi-value">{{ formatCurrency(totalSalary()) }}</div>
+      <div class="kpi-label">Estimasi Total Gaji</div>
+    </app-card>
   </div>
 
   <app-card>
@@ -53,22 +61,80 @@
     @if (r.perDivisi.length === 0) {
       <p class="muted">Tidak ada data pada periode ini.</p>
     } @else {
-      <table>
-        <tr>
-          <th>Divisi</th>
-          <th>Hadir</th>
-          <th>Terlambat</th>
-          <th>Alfa</th>
-        </tr>
-        @for (row of r.perDivisi; track row.divisiId) {
-          <tr>
-            <td>{{ row.namaDivisi }}</td>
-            <td>{{ row.hadir }}</td>
-            <td>{{ row.terlambat }}</td>
-            <td>{{ row.alfa }}</td>
-          </tr>
-        }
-      </table>
+      <div class="table-scroll">
+        <table class="divisi-table">
+          <thead>
+            <tr>
+              <th class="col-expand"></th>
+              <th>Divisi</th>
+              <th>Hadir</th>
+              <th>Terlambat</th>
+              <th>Alfa</th>
+              <th>Pulang Cepat</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of r.perDivisi; track row.divisiId) {
+              <tr class="divisi-row" [class.expanded]="expandedDivisi() === row.divisiId" (click)="toggleDivisi(row.divisiId)">
+                <td class="col-expand">
+                  <span class="expand-icon" [class.rotated]="expandedDivisi() === row.divisiId">
+                    <app-icon name="chevron-right" [size]="16"></app-icon>
+                  </span>
+                </td>
+                <td><strong>{{ row.namaDivisi }}</strong></td>
+                <td>{{ row.hadir }}</td>
+                <td>{{ row.terlambat }}</td>
+                <td>{{ row.alfa }}</td>
+                <td>{{ row.pulangCepat }}</td>
+              </tr>
+              @if (expandedDivisi() === row.divisiId) {
+                <tr class="expand-content">
+                  <td colspan="6">
+                    @if (employeesOf(row.divisiId).length === 0) {
+                      <p class="muted" style="padding: 8px 0;">Tidak ada data karyawan pada divisi ini.</p>
+                    } @else {
+                      <div class="table-scroll">
+                        <table class="emp-table">
+                          <thead>
+                            <tr>
+                              <th>NIK</th>
+                              <th>Nama</th>
+                              <th>Jabatan</th>
+                              <th>Status</th>
+                              <th>Hadir</th>
+                              <th>Terlambat</th>
+                              <th>Alfa</th>
+                              <th>Lembur</th>
+                              <th>Upah</th>
+                              <th>Est. Gaji</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (emp of employeesOf(row.divisiId); track emp.employeeId) {
+                              <tr>
+                                <td>{{ emp.nik }}</td>
+                                <td>{{ emp.namaLengkap }}</td>
+                                <td>{{ emp.jabatan }}</td>
+                                <td><span class="badge badge-info">{{ emp.statusKaryawan }}</span></td>
+                                <td>{{ emp.hadir }}</td>
+                                <td>{{ emp.terlambat }}</td>
+                                <td>{{ emp.alfa }}</td>
+                                <td>{{ emp.totalLembur }}</td>
+                                <td class="nowrap">{{ formatCurrency(emp.nominalUpah) }}/{{ emp.satuanUpah === 'PER_BULAN' ? 'bln' : 'jam' }}</td>
+                                <td class="salary-cell">{{ formatCurrency(emp.estimatedSalary) }}</td>
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    }
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
     }
   </app-card>
 } @else if (loading()) {

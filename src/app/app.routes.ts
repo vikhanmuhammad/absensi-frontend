@@ -34,7 +34,7 @@ export const routes: Routes = [
       },
       {
         path: 'absensi/massal',
-        canActivate: [roleGuard(['SUPER_ADMIN', 'HRD', 'SUPERVISOR'])],
+        canActivate: [roleGuard(['SUPER_ADMIN', 'HRD', 'SUPERVISOR', 'KARYAWAN'])],
         loadComponent: () =>
           import('./pages/attendance/bulk/bulk-attendance.component').then((m) => m.BulkAttendanceComponent),
         data: { title: 'Input Absensi Massal' },

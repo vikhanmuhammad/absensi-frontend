@@ -25,7 +25,13 @@ export type IconName =
   | 'chevron-left'
   | 'chevron-right'
   | 'chevron-down'
-  | 'logout';
+  | 'logout'
+  | 'eye'
+  | 'edit'
+  | 'search'
+  | 'plus'
+  | 'trash'
+  | 'save';
 
 // Pemetaan nama ikon abstrak -> class Remixicon (https://remixicon.com), supaya pemakaian
 // <app-icon name="..."> di seluruh aplikasi tidak perlu berubah jika suatu saat ganti icon set.
@@ -55,6 +61,12 @@ const ICON_MAP: Record<IconName, string> = {
   'chevron-right': 'ri-arrow-right-s-line',
   'chevron-down': 'ri-arrow-down-s-line',
   logout: 'ri-logout-box-r-line',
+  eye: 'ri-eye-line',
+  edit: 'ri-edit-line',
+  search: 'ri-search-line',
+  plus: 'ri-add-line',
+  trash: 'ri-delete-bin-line',
+  save: 'ri-save-line',
 };
 
 @Component({

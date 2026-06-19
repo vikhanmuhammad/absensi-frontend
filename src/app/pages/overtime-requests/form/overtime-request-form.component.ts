@@ -43,6 +43,7 @@ export class OvertimeRequestFormComponent implements OnInit {
   submitting = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
+  dateWarning = signal('');
 
   isHarian = computed(() => this.statusKaryawan() === 'HARIAN');
 
@@ -77,6 +78,18 @@ export class OvertimeRequestFormComponent implements OnInit {
       return;
     }
 
+    // Validasi: lembur hanya boleh Sabtu/Minggu (kecuali karyawan harian)
+    const { tanggal } = this.form.getRawValue();
+    if (!this.isHarian()) {
+      const d = new Date(tanggal);
+      const day = d.getDay();
+      if (day !== 0 && day !== 6) {
+        this.dateWarning.set('Pengajuan lembur hanya boleh untuk hari Sabtu atau Minggu.');
+        return;
+      }
+    }
+
+    this.dateWarning.set('');
     this.submitting.set(true);
     this.errorMessage.set('');
     this.successMessage.set('');

@@ -216,6 +216,8 @@ th {
 
 td {
   border-bottom: 1px solid var(--color-border);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 tbody tr {
@@ -326,10 +328,12 @@ app-card h3 {
   flex-wrap: wrap;
 }
 
-.action-cell {
+.action-cell,
+.actions-cell {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .form-row {

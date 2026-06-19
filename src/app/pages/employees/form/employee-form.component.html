@@ -124,7 +124,12 @@
         </div>
       </div>
     } @else {
+      <h3 class="section-title">Data Diri</h3>
       <div class="form-grid cols-2">
+        <div class="form-group">
+          <label for="e-nik">NIK</label>
+          <input id="e-nik" type="text" formControlName="nik" />
+        </div>
         <div class="form-group">
           <label for="e-namaLengkap">Nama Lengkap *</label>
           <input id="e-namaLengkap" type="text" formControlName="namaLengkap" />
@@ -137,13 +142,53 @@
           <label for="e-noHp">No. HP *</label>
           <input id="e-noHp" type="text" formControlName="noHp" />
         </div>
+        <div class="form-group full-width">
+          <label for="e-alamat">Alamat *</label>
+          <textarea id="e-alamat" formControlName="alamat" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="e-tanggalLahir">Tanggal Lahir</label>
+          <input id="e-tanggalLahir" type="date" formControlName="tanggalLahir" />
+        </div>
+        <div class="form-group">
+          <label for="e-jenisKelamin">Jenis Kelamin</label>
+          <select id="e-jenisKelamin" formControlName="jenisKelamin">
+            <option value="L">Laki-laki</option>
+            <option value="P">Perempuan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="e-statusPernikahan">Status Pernikahan</label>
+          <select id="e-statusPernikahan" formControlName="statusPernikahan">
+            <option value="BELUM MENIKAH">Belum Menikah</option>
+            <option value="MENIKAH">Menikah</option>
+            <option value="CERAI">Cerai</option>
+          </select>
+        </div>
+      </div>
+
+      <h3 class="section-title">Data Kepegawaian</h3>
+      <div class="form-grid cols-2">
         <div class="form-group">
           <label for="e-jabatan">Jabatan *</label>
           <input id="e-jabatan" type="text" formControlName="jabatan" />
         </div>
-        <div class="form-group full-width">
-          <label for="e-alamat">Alamat *</label>
-          <textarea id="e-alamat" formControlName="alamat" rows="2"></textarea>
+        <div class="form-group">
+          <label for="e-divisiId">Divisi *</label>
+          <select id="e-divisiId" formControlName="divisiId">
+            <option value="">— Pilih Divisi —</option>
+            @for (d of divisions(); track d.id) {
+              <option [value]="d.id">{{ d.namaDivisi }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="e-statusKaryawan">Status Karyawan *</label>
+          <select id="e-statusKaryawan" formControlName="statusKaryawan">
+            <option value="TETAP">Tetap</option>
+            <option value="KONTRAK">Kontrak</option>
+            <option value="HARIAN">Harian</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="e-statusAktif">Status Aktif</label>
@@ -151,6 +196,37 @@
             <option [ngValue]="true">Aktif</option>
             <option [ngValue]="false">Nonaktif</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label for="e-tanggalMulaiKerja">Tanggal Mulai Kerja</label>
+          <input id="e-tanggalMulaiKerja" type="date" formControlName="tanggalMulaiKerja" />
+        </div>
+        <div class="form-group">
+          <label for="e-tanggalAkhirKontrak">Tanggal Akhir Kontrak</label>
+          <input id="e-tanggalAkhirKontrak" type="date" formControlName="tanggalAkhirKontrak" />
+        </div>
+      </div>
+
+      <h3 class="section-title">Upah & Lembur</h3>
+      <div class="form-grid cols-2">
+        <div class="form-group">
+          <label for="e-nominalUpah">Nominal Upah *</label>
+          <input id="e-nominalUpah" type="number" formControlName="nominalUpah" placeholder="0" />
+        </div>
+        <div class="form-group">
+          <label for="e-satuanUpah">Satuan Upah *</label>
+          <select id="e-satuanUpah" formControlName="satuanUpah">
+            <option value="PER_BULAN">Per Bulan</option>
+            <option value="PER_JAM">Per Jam</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="e-nominalUpahLembur">Nominal Upah Lembur *</label>
+          <input id="e-nominalUpahLembur" type="number" formControlName="nominalUpahLembur" placeholder="0" />
+        </div>
+        <div class="form-group">
+          <label for="e-pengaliLembur">Pengali Lembur</label>
+          <input id="e-pengaliLembur" type="number" formControlName="pengaliLembur" placeholder="1.5" step="0.1" />
         </div>
       </div>
     }

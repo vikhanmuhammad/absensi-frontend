@@ -45,6 +45,12 @@ export class LeaveRequestFormComponent implements OnInit {
   submitting = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
+  dateWarning = signal('');
+
+  minDate = (() => {
+    const d = new Date();
+    return d.toISOString().split('T')[0];
+  })();
 
   form = this.fb.nonNullable.group({
     jenisCuti: ['CUTI_TAHUNAN' as JenisCuti, Validators.required],
@@ -90,6 +96,32 @@ export class LeaveRequestFormComponent implements OnInit {
       return;
     }
 
+    // Validasi: tidak boleh backdate & tidak boleh weekend
+    const { tanggalMulai, tanggalSelesai } = this.form.getRawValue();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (new Date(tanggalMulai) < today) {
+      this.dateWarning.set('Tanggal mulai tidak boleh di masa lalu.');
+      return;
+    }
+    if (new Date(tanggalSelesai) < new Date(tanggalMulai)) {
+      this.dateWarning.set('Tanggal selesai harus sama atau setelah tanggal mulai.');
+      return;
+    }
+
+    // Cek apakah ada hari Sabtu/Minggu dalam rentang
+    const start = new Date(tanggalMulai);
+    const end = new Date(tanggalSelesai);
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const day = d.getDay();
+      if (day === 0 || day === 6) {
+        this.dateWarning.set('Pengajuan cuti/izin tidak dapat mencakup hari Sabtu atau Minggu.');
+        return;
+      }
+    }
+
+    this.dateWarning.set('');
     this.submitting.set(true);
     this.errorMessage.set('');
     this.successMessage.set('');

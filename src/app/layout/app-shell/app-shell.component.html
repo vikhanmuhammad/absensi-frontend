@@ -36,9 +36,6 @@
             @for (child of group.children; track child.path) {
               <a [routerLink]="child.path" routerLinkActive="active" class="nav-link nav-child" [title]="child.label">
                 <span class="nav-label">{{ child.label }}</span>
-                @if (child.path === '/notifikasi' && notifications.unreadCount() > 0) {
-                  <span class="nav-badge">{{ notifications.unreadCount() }}</span>
-                }
               </a>
             }
           </div>
@@ -55,6 +52,14 @@
       <app-icon [name]="collapsed() ? 'chevron-right' : 'chevron-left'" class="show-desktop" [size]="22"></app-icon>
     </button>
     <div class="topbar-title">{{ pageTitle }}</div>
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn notification-bell" routerLink="/notifikasi" title="Notifikasi">
+      <app-icon name="bell" [size]="20"></app-icon>
+      @if (notifications.unreadCount() > 0) {
+        <span class="notification-badge">{{ notifications.unreadCount() }}</span>
+      }
+    </button>
   </div>
   <div class="topbar-user">
     <div class="avatar">{{ avatarInitial() }}</div>
