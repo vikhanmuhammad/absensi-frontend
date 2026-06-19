@@ -169,6 +169,11 @@ export class AppShellComponent implements OnInit, OnDestroy {
     const role = user?.role;
     if (!role) return [];
     const isHarian = user?.employee?.statusKaryawan === 'HARIAN';
+    const isSpvProject = !!user?.employee?.isSpvProject;
+    // Input Absensi Massal hanya utk Admin/HRD/Supervisor divisi, atau karyawan yang sedang jadi SPV Project.
+    const canBulkAttendance = ['SUPER_ADMIN', 'HRD', 'SUPERVISOR'].includes(role) || isSpvProject;
+    // Daftar Projek disembunyikan dari karyawan biasa yang bukan SPV Project apa pun.
+    const canViewProjects = role !== 'KARYAWAN' || isSpvProject;
     return NAV_GROUPS
       .filter((g) => g.roles.includes(role))
       .filter((g) => {
@@ -178,8 +183,14 @@ export class AppShellComponent implements OnInit, OnDestroy {
       })
       .map((g) => ({
         ...g,
-        children: g.children.filter((c) => c.roles.includes(role)),
-      }));
+        children: g.children.filter((c) => {
+          if (!c.roles.includes(role)) return false;
+          if (c.path === '/absensi/massal') return canBulkAttendance;
+          if (c.path === '/projek') return canViewProjects;
+          return true;
+        }),
+      }))
+      .filter((g) => g.children.length > 0);
   });
 
   displayName = computed(

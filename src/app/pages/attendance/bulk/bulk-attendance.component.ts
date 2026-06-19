@@ -6,8 +6,6 @@ import { forkJoin } from 'rxjs';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { AttendanceService } from '../../../core/services/attendance.service';
-import { EmployeeService } from '../../../core/services/employee.service';
-import { AuthService } from '../../../core/services/auth.service';
 import { Employee } from '../../../core/models/entities';
 
 @Component({
@@ -21,8 +19,6 @@ export class BulkAttendanceComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private attendanceService = inject(AttendanceService);
-  private employeeService = inject(EmployeeService);
-  private authService = inject(AuthService);
 
   employees = signal<Employee[]>([]);
   selectedIds = signal<Set<number>>(new Set());
@@ -44,15 +40,8 @@ export class BulkAttendanceComponent implements OnInit {
   }
 
   private loadEmployees(): void {
-    const user = this.authService.currentUser();
-    const filter: { divisiId?: number } = {};
-
-    // Supervisor hanya lihat karyawan divisi sendiri
-    if (user?.role === 'SUPERVISOR' && user.employee?.divisiId) {
-      filter.divisiId = user.employee.divisiId;
-    }
-
-    this.employeeService.list(filter).subscribe({
+    // Daftar karyawan sudah di-scope di backend sesuai peran aktor (Admin/HRD/Supervisor divisi/SPV Project).
+    this.attendanceService.bulkTargets().subscribe({
       next: (data) => this.employees.set(data.filter((e) => e.statusAktif)),
     });
   }

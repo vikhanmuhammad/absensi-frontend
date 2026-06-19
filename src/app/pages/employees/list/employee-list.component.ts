@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, startWith, switchMap } from 'rxjs';
@@ -9,7 +9,13 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { EmployeeService } from '../../../core/services/employee.service';
 import { DivisionService } from '../../../core/services/division.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Division, Employee } from '../../../core/models/entities';
+import { Division, Employee, StatusKaryawan } from '../../../core/models/entities';
+
+const TABS: { value: StatusKaryawan; label: string }[] = [
+  { value: 'TETAP', label: 'Tetap' },
+  { value: 'KONTRAK', label: 'Kontrak' },
+  { value: 'HARIAN', label: 'Harian' },
+];
 
 @Component({
   selector: 'app-employee-list',
@@ -25,17 +31,28 @@ export class EmployeeListComponent implements OnInit {
   private router = inject(Router);
   protected auth = inject(AuthService);
 
-  employees = signal<Employee[]>([]);
+  tabs = TABS;
+  activeTab = signal<StatusKaryawan>('TETAP');
+
+  allEmployees = signal<Employee[]>([]);
   divisions = signal<Division[]>([]);
   loading = signal(true);
 
   filterForm = this.fb.nonNullable.group({
     search: [''],
     divisiId: [''],
-    statusKaryawan: [''],
   });
 
   canCreate = false;
+
+  employees = computed(() => this.allEmployees().filter((e) => e.statusKaryawan === this.activeTab()));
+
+  tabCounts = computed(() => {
+    const list = this.allEmployees();
+    const counts: Record<StatusKaryawan, number> = { TETAP: 0, KONTRAK: 0, HARIAN: 0 };
+    for (const e of list) counts[e.statusKaryawan]++;
+    return counts;
+  });
 
   ngOnInit() {
     this.canCreate = ['SUPER_ADMIN', 'HRD'].includes(this.auth.currentUser()?.role ?? '');
@@ -50,17 +67,20 @@ export class EmployeeListComponent implements OnInit {
           this.employeeService.list({
             search: value.search || undefined,
             divisiId: value.divisiId ? Number(value.divisiId) : undefined,
-            statusKaryawan: (value.statusKaryawan as Employee['statusKaryawan']) || undefined,
           }),
         ),
       )
       .subscribe({
         next: (data) => {
-          this.employees.set(data);
+          this.allEmployees.set(data);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
       });
+  }
+
+  setTab(tab: StatusKaryawan) {
+    this.activeTab.set(tab);
   }
 
   goToCreate() {

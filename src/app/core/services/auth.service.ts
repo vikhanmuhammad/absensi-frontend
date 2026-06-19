@@ -16,6 +16,7 @@ export interface CurrentUser {
     namaLengkap: string;
     divisiId: number;
     statusKaryawan: string;
+    isSpvProject: boolean;
   } | null;
 }
 

@@ -1,7 +1,7 @@
 <div class="page-header">
   <div>
     <h1>Data Karyawan</h1>
-    <p>{{ employees().length }} karyawan ditemukan</p>
+    <p>{{ allEmployees().length }} karyawan ditemukan</p>
   </div>
   @if (canCreate) {
     <app-button variant="primary" (btnClick)="goToCreate()">+ Tambah Karyawan</app-button>
@@ -16,13 +16,15 @@
       <option [value]="d.id">{{ d.namaDivisi }}</option>
     }
   </select>
-  <select formControlName="statusKaryawan">
-    <option value="">Semua Status</option>
-    <option value="TETAP">Tetap</option>
-    <option value="KONTRAK">Kontrak</option>
-    <option value="HARIAN">Harian</option>
-  </select>
 </form>
+
+<div class="tabs">
+  @for (tab of tabs; track tab.value) {
+    <button type="button" class="tab-btn" [class.active]="activeTab() === tab.value" (click)="setTab(tab.value)">
+      {{ tab.label }} <span class="tab-count">{{ tabCounts()[tab.value] }}</span>
+    </button>
+  }
+</div>
 
 <app-card>
   @if (loading()) {

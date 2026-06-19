@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiEnvelope } from '../models/api-envelope';
-import { Attendance, LokasiKerja } from '../models/entities';
+import { Attendance, Employee, LokasiKerja } from '../models/entities';
 
 export interface ClockInInput {
   namaProjekAktivitas: string;
@@ -59,6 +59,13 @@ export class AttendanceService {
   bulkInput(input: BulkAttendanceInput) {
     return this.http
       .post<ApiEnvelope<Attendance>>(`${this.base}/bulk`, input, { withCredentials: true })
+      .pipe(map((res) => res.data));
+  }
+
+  /** Daftar karyawan yang boleh diinput absensinya oleh aktor yang login (scoped sesuai peran/SPV Project di backend). */
+  bulkTargets() {
+    return this.http
+      .get<ApiEnvelope<Employee[]>>(`${this.base}/bulk-targets`, { withCredentials: true })
       .pipe(map((res) => res.data));
   }
 }
